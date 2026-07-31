@@ -25,7 +25,7 @@ export default function Home() {
             type="number"
             min="2"
             placeholder="Rows"
-            onChange={(currVal) => {setMazeConfigs(prevConfig => {return {...prevConfig, rows: currVal.target.value}})}}
+            onChange={(currVal) => {setMazeConfigs(prevConfig => {return {...prevConfig, rows: Number(currVal.target.value)}})}}
           />
 
           <span className="cross">×</span>
@@ -35,7 +35,7 @@ export default function Home() {
             type="number"
             min="2"
             placeholder="Cols"
-            onChange={(currVal) => {setMazeConfigs(prevConfig => {return {...prevConfig, cols: currVal.target.value}})}}
+            onChange={(currVal) => {setMazeConfigs(prevConfig => {return {...prevConfig, cols: Number(currVal.target.value)}})}}
 
           />
         </div>

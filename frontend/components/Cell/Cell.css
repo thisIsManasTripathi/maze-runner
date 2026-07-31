@@ -1,0 +1,33 @@
+.cell {
+    width: 32px;
+    height: 32px;
+
+    border: 1px solid #2d3748;
+    /* background-color: #1e293b; */
+    background-color: #000;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* background-image: url('../../assets/tile1.png'); */
+    /* background-size: repeat; */
+
+    cursor: pointer;
+
+    transition:
+        background-color 150ms ease,
+        transform 120ms ease,
+        border-color 150ms ease;
+}
+
+.wall {
+    background-color: #fff;
+}
+
+
+/* .cell:hover {
+    background-color: #334155;
+    border-color: #60a5fa;
+    transform: scale(1.05);
+} */
