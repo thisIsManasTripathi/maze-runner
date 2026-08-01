@@ -16,14 +16,14 @@ app.add_middleware(
 )
 
 class MazeConfig(BaseModel):
-    rows: int
-    cols: int
+    mazeDimensions: dict
+    mazeGrid: list
 
 
 @app.post("/api/configs/")
 def read_root(mazeConfig: MazeConfig):
     # return ["Jai", "Hind"]
-    print(mazeConfig.model_dump())
+    print(mazeConfig.mazeGrid)
     return {"project": "maze-runner", **mazeConfig.model_dump()}
 
 # @app.get("/{item}")
