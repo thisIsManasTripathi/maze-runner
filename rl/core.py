@@ -1,0 +1,207 @@
+import numpy as np
+import random as rm
+
+
+class GridWorld:
+
+    penalty = -10
+
+    def __init__(self, gridInp: list, goalLoc: list):
+        self.nrows = len(gridInp)
+        self.ncols = len(gridInp[0])
+        self.goalLoc = goalLoc
+
+        ## Generating the map
+        try:
+            self.mapMatrix = np.array(gridInp)
+            # print(self.mapMatrix)
+        except Exception as e:
+
+            print(e)
+
+    def setNonTerminalStates(self):
+        self.nonTerminalStates = []
+        for i in range(self.nrows):
+            for j in range(self.ncols):
+                self.nonTerminalStates.append((i,j)) if (self.mapMatrix[i,j] != self.penalty and [i,j] != self.goalLoc) else 0
+
+      
+
+class Agent():
+
+    actions = ["up", "down", "left", "right"]
+
+    actionsSymbolic = ["▲", "▼", "◀", "▶"]
+    
+
+
+    def __init__(self, nrows: int, ncols):
+        self.rowStates=nrows
+        self.colStates = ncols
+        self.Q = np.zeros((nrows, ncols, 4)) #4 possible actions in each state
+        self.N = np.zeros((nrows, ncols, 4))
+        self.policy = np.full((nrows, ncols, 4), 0.25)
+
+    def move(self, action:str, pos: tuple):
+
+        match(action):
+            case "up":
+                next_state = (pos[0]-1, pos[1])
+            case "down":
+                next_state = (pos[0]+1, pos[1])
+            case "left":
+                next_state = (pos[0], pos[1]-1)
+            case "right":
+                next_state = (pos[0], pos[1]+1)
+                
+        return next_state
+
+    def getSimplePolicy(self, symbolic=False):
+        
+        if symbolic:
+            policyH = np.full((self.rowStates,self.colStates), "")
+            for i in range(1, self.rowStates-1):
+                for j in range(1, self.colStates-1):
+                    # print(f"{(i,j)=}")
+                    policyH[i,j] = self.actionsSymbolic[np.argmax(self.policy[i,j])]
+
+            return policyH
+
+
+class MCAgent(Agent):
+
+
+    def __init__(self, numStates: int):
+        super().__init__(numStates)
+
+
+class Trainer():
+
+    rng = np.random.default_rng()
+
+    def __init__(self, numRounds: int = 15, numEpisodes:int = 1000, gamma: float = 1, epsilon: float = 0.1):
+        self.numRounds = numRounds
+        self.numEpisodes = numEpisodes
+        self.gamma = gamma
+        self.epsilon = epsilon
+        self.goalCount = 0
+        self.crashCount = 0
+
+    @staticmethod
+    def random_argmax(arr):
+        max_val = np.max(arr)
+        all_indices = np.where(arr == max_val)
+        return rm.choice(all_indices[0])
+    
+
+    def generate_episode(self, state, agent, environment):
+        episode = []
+        
+        while (state in environment.nonTerminalStates):
+
+
+            # print(actions_prob)
+
+            # for i in range(4):
+            #     agent.policy[*state, i] = greedy_prob if i == greedy_action_index else non_greedy_prob
+
+            action = Trainer.rng.choice([0,1,2,3], p=agent.policy[state])
+            # print (state, action)
+            episode.append((*state,action))
+            state = agent.move(Agent.actions[action], state)
+
+        episode.append((*state, 0))
+        print(f"{episode=}")
+        return np.array(episode)
+    
+
+    def improvePolicy(self, agent, environment):
+
+
+        for i in range(1,environment.nrows):
+            for j in range(1,environment.ncols):  
+
+                greedy_action_index = Trainer.random_argmax(agent.Q[i,j])
+                # print(f"{greedy_action_index=}")
+                non_greedy_prob = self.epsilon/4 #cause here the number of actions in any state is 4
+                greedy_prob = 1 - self.epsilon + non_greedy_prob
+
+                actions_prob = [greedy_prob if i == greedy_action_index else non_greedy_prob for i in range(4)]
+                agent.policy[i,j] = actions_prob.copy() 
+
+
+    def train(self, agent, environment: GridWorld):
+        for i in range(self.numRounds):
+
+            agent.Q = np.zeros((environment.nrows, environment.ncols, 4))
+            agent.N = np.zeros_like(agent.Q)
+
+            for i in range(self.numEpisodes):
+                episode = self.generate_episode(rm.choice(environment.nonTerminalStates), agent, environment)
+                # print(episode[-1][:-1])
+                if (episode[-1][:-1] == [6,6]).all():
+                    self.goalCount += 1
+                else:
+                    self.crashCount += 1
+                # print(f"Episode : \n{episode}\n")
+                rows = episode[:,0]
+                cols = episode[:,1]
+                rews = environment.mapMatrix[rows, cols]  #vector of rewards
+                print(f"{rews=}")
+                visited = set()
+                for epIdx in range(len(episode)-1):
+                    if tuple(episode[epIdx]) not in visited:
+                        # visited.add(episode[epIdx])
+                        visited.add(tuple(episode[epIdx]))
+
+                        # discountedReward = rew*(self.gamma**(len(episode)-epIdx-2))
+                        discountedReward = np.sum(rews[epIdx:])
+                        print(f"Reward for state {episode[epIdx]} = {discountedReward}\n\n")
+                        # G = (len(episode)-epIdx-1)*(-0.1) + rew # 'return' of the state, action
+                        agent.N[episode[epIdx]] += 1
+                        agent.Q[episode[epIdx]] = agent.Q[episode[epIdx]] + ((1/agent.N[episode[epIdx]])*(discountedReward - agent.Q[episode[epIdx]])) #for discounted reward
+                        # agent.Q[episode[epIdx]] = agent.Q[episode[epIdx]] + ((1/agent.N[episode[epIdx]])*(G - agent.Q[episode[epIdx]])) #for negative step reward
+
+
+                    
+            self.improvePolicy(agent, environment)
+
+        return agent.policy
+    
+
+
+arr = [[-10, -10, -10, -10, -10, -10, -10, -10], 
+             [-10, -1, -1, -1, -1, -1, -1, -10], 
+             [-10, -1, -10, -1, -10, -10, -1, -10], 
+             [-10, -1, -10, -1, -1, -10, -1, -10], 
+             [-10, -1, -1, -10, -10, -1, -1, -10], 
+             [-10, -10, -1, -1, -1, -10, -10, -10], 
+             [-10, -1, -10, -10, -1, -1, 10, -10], 
+             [-10, -10, -10, -10, -10, -10, -10, -10]]
+
+'''[[-100, -100, -100, -100, -100, -100, -100, -100], 
+
+             [-100, 0, 0, 0, 0, 0, 0, -100], 
+             [-100, 0, -100, 0, -100, -100, 0, -100], 
+             [-100, 0, -100, 0, 0, -100, 0, -100], 
+             [-100, 0, 0, -100, -100, 0, 0, -100], 
+             [-100, -100, 0, 0, 0, -100, -100, -100], 
+             [-100, 0, -100, -100, 0, 0, 10, -100], 
+             [-100, -100, -100, -100, -100, -100, -100, -100]]'''
+
+grid = GridWorld(arr, [6,6])
+
+
+grid.setNonTerminalStates()
+print(grid.nonTerminalStates)
+agentVinod = Agent(grid.nrows, grid.ncols)
+# print(agentVinod.policy)
+trainer = Trainer(numRounds=1,numEpisodes=10)
+# trainer = Trainer()
+trainer.train(agentVinod, grid)
+# print(agentVinod.policy)
+print(agentVinod.getSimplePolicy(True))
+print(f"{trainer.crashCount=}")
+print(f"{trainer.goalCount=}")
+
+

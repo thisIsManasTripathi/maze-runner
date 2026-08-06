@@ -68,7 +68,16 @@ export default function Build() {
         })
     }
 
-
+    async function sendMazeDetails() {
+        await fetch("http://localhost:8000/api/configs/", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({mazeDimensions: mazeDims, mazeGrid: mazeGrid})
+        });
+        console.log("bhej diya")
+    }
 
     const mazeGridCells = mazeGrid?.flat().map((item, idx) => {
         const rowNum = Math.floor(idx / mazeDims.cols);
@@ -119,7 +128,7 @@ export default function Build() {
                     onClick={selectTool}
                 />
             </div>
-
+            <button onClick={sendMazeDetails}>Send Details</button>
         </div>
     );
 }
