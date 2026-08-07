@@ -21,7 +21,7 @@ class MazeConfig(BaseModel):
 
 
 @app.post("/api/configs/")
-def read_root(mazeConfig: MazeConfig):
+def getConfig(mazeConfig: MazeConfig):
     # return ["Jai", "Hind"]
     print(mazeConfig.mazeGrid)
     return {"project": "maze-runner", **mazeConfig.model_dump()}

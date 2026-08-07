@@ -6,7 +6,7 @@ class GridWorld:
 
     penalty = -10
 
-    def __init__(self, gridInp: list, goalLoc: list):
+    def __init__(self, gridInp: list, goalLoc: tuple):
         self.nrows = len(gridInp)
         self.ncols = len(gridInp[0])
         self.goalLoc = goalLoc
@@ -23,7 +23,7 @@ class GridWorld:
         self.nonTerminalStates = []
         for i in range(self.nrows):
             for j in range(self.ncols):
-                self.nonTerminalStates.append((i,j)) if (self.mapMatrix[i,j] != self.penalty and [i,j] != self.goalLoc) else 0
+                self.nonTerminalStates.append((i,j)) if (self.mapMatrix[i,j] != self.penalty) else 0
 
       
 
@@ -79,7 +79,7 @@ class Trainer():
 
     rng = np.random.default_rng()
 
-    def __init__(self, numRounds: int = 15, numEpisodes:int = 1000, gamma: float = 1, epsilon: float = 0.1):
+    def __init__(self, numRounds: int = 15, numEpisodes:int = 1000, gamma: float = 0.9, epsilon: float = 0.21):
         self.numRounds = numRounds
         self.numEpisodes = numEpisodes
         self.gamma = gamma
@@ -97,29 +97,36 @@ class Trainer():
     def generate_episode(self, state, agent, environment):
         episode = []
         
-        while (state in environment.nonTerminalStates):
+        while (state != environment.goalLoc and len(episode)<4*len(environment.nonTerminalStates)):
 
 
             # print(actions_prob)
 
             # for i in range(4):
             #     agent.policy[*state, i] = greedy_prob if i == greedy_action_index else non_greedy_prob
+            # print(state)
 
             action = Trainer.rng.choice([0,1,2,3], p=agent.policy[state])
             # print (state, action)
+            nextState = agent.move(Agent.actions[action], state)
             episode.append((*state,action))
-            state = agent.move(Agent.actions[action], state)
+            if (nextState not in environment.nonTerminalStates):
+                episode.append((*nextState,action))
+                # print(f" went out of bound : {nextState}")
+                continue
+
+            state = nextState
 
         episode.append((*state, 0))
-        print(f"{episode=}")
+        # print(f"{episode=}\n\n")
         return np.array(episode)
     
 
     def improvePolicy(self, agent, environment):
 
 
-        for i in range(1,environment.nrows):
-            for j in range(1,environment.ncols):  
+        for i in range(1,environment.nrows-1):
+            for j in range(1,environment.ncols-1):  
 
                 greedy_action_index = Trainer.random_argmax(agent.Q[i,j])
                 # print(f"{greedy_action_index=}")
@@ -147,7 +154,7 @@ class Trainer():
                 rows = episode[:,0]
                 cols = episode[:,1]
                 rews = environment.mapMatrix[rows, cols]  #vector of rewards
-                print(f"{rews=}")
+                # print(f"{rews=}")
                 visited = set()
                 for epIdx in range(len(episode)-1):
                     if tuple(episode[epIdx]) not in visited:
@@ -155,28 +162,37 @@ class Trainer():
                         visited.add(tuple(episode[epIdx]))
 
                         # discountedReward = rew*(self.gamma**(len(episode)-epIdx-2))
-                        discountedReward = np.sum(rews[epIdx:])
-                        print(f"Reward for state {episode[epIdx]} = {discountedReward}\n\n")
+                        # G = np.sum(rews[epIdx:]) #undiscountedReturn
+                        # [print(f"{rews[i]}*{self.gamma**i:.2f}", end=" + ") for i in range(len(rews[epIdx:]))]
+                        # print("\n\n")
+                        # print(np.dot((rews[epIdx:]), np.array([self.gamma**i for i in range(len(rews[epIdx:]))])))
+                        discountedReward = np.sum(np.dot((rews[epIdx:]), np.array([self.gamma**i for i in range(len(rews[epIdx:]))])))
+                        # print(f"Reward for state {episode[epIdx]} = {discountedReward}\n\n")
                         # G = (len(episode)-epIdx-1)*(-0.1) + rew # 'return' of the state, action
-                        agent.N[episode[epIdx]] += 1
-                        agent.Q[episode[epIdx]] = agent.Q[episode[epIdx]] + ((1/agent.N[episode[epIdx]])*(discountedReward - agent.Q[episode[epIdx]])) #for discounted reward
+                        agent.N[*episode[epIdx]] += 1
+                        # print("Old Q:", agent.Q[*episode[epIdx]])
+                        # print(agent.Q[*episode[epIdx]])
+                        agent.Q[*episode[epIdx]] = agent.Q[*episode[epIdx]] + ((1/agent.N[*episode[epIdx]])*(discountedReward - agent.Q[*episode[epIdx]])) #for discounted reward
                         # agent.Q[episode[epIdx]] = agent.Q[episode[epIdx]] + ((1/agent.N[episode[epIdx]])*(G - agent.Q[episode[epIdx]])) #for negative step reward
 
-
-                    
+                        # print("State:", episode[epIdx][:2])
+                        # print("Action:", episode[epIdx][2])
+                        # print("Return:", discountedReward)
+                        # print("New Q:", agent.Q[*episode[epIdx]])
+                                            
             self.improvePolicy(agent, environment)
+            # print(agent.getSimplePolicy(True))
 
         return agent.policy
     
-
-
+pathVal = -0.1
 arr = [[-10, -10, -10, -10, -10, -10, -10, -10], 
-             [-10, -1, -1, -1, -1, -1, -1, -10], 
-             [-10, -1, -10, -1, -10, -10, -1, -10], 
-             [-10, -1, -10, -1, -1, -10, -1, -10], 
-             [-10, -1, -1, -10, -10, -1, -1, -10], 
-             [-10, -10, -1, -1, -1, -10, -10, -10], 
-             [-10, -1, -10, -10, -1, -1, 10, -10], 
+             [-10, pathVal, pathVal, pathVal, pathVal, pathVal, pathVal, -10], 
+             [-10, pathVal, -10, pathVal, -10, -10, pathVal, -10], 
+             [-10, pathVal, -10, pathVal, pathVal, -10, pathVal, -10], 
+             [-10, pathVal, pathVal, -10, -10, pathVal, pathVal, -10], 
+             [-10, -10, pathVal, pathVal, pathVal, -10, -10, -10], 
+             [-10, pathVal, -10, -10, pathVal, pathVal, 100, -10], 
              [-10, -10, -10, -10, -10, -10, -10, -10]]
 
 '''[[-100, -100, -100, -100, -100, -100, -100, -100], 
@@ -189,19 +205,23 @@ arr = [[-10, -10, -10, -10, -10, -10, -10, -10],
              [-100, 0, -100, -100, 0, 0, 10, -100], 
              [-100, -100, -100, -100, -100, -100, -100, -100]]'''
 
-grid = GridWorld(arr, [6,6])
+grid = GridWorld(arr, (6,6))
 
 
 grid.setNonTerminalStates()
 print(grid.nonTerminalStates)
 agentVinod = Agent(grid.nrows, grid.ncols)
 # print(agentVinod.policy)
-trainer = Trainer(numRounds=1,numEpisodes=10)
+trainer = Trainer(numRounds=10,numEpisodes=200)
 # trainer = Trainer()
 trainer.train(agentVinod, grid)
 # print(agentVinod.policy)
 print(agentVinod.getSimplePolicy(True))
+
 print(f"{trainer.crashCount=}")
 print(f"{trainer.goalCount=}")
+print(np.max(agentVinod.Q))
+print(np.min(agentVinod.Q))
+print(np.mean(agentVinod.Q))
 
 
