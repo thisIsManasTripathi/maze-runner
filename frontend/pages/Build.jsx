@@ -10,15 +10,15 @@ export default function Build() {
     const [mazeDims, setMazeDims] = useState(null);
     const [mazeGrid, setMazeGrid] = useState(null);
     const [toolArray, setToolArray] = useState(tools);
-    const [selectedTool, setSelectedTool] = useState(null); //this will just hold the value;
-
+    const [selectedTool, setSelectedTool] = useState(null); //this will hold the object;
+    const [goalLocation, setGoalLocation] = useState(null);
     const location = useLocation();
 
     function buildEmptyWorld(rows, cols) {
         return Array.from({ length: rows }, (_, r) => {
             return Array.from({ length: cols }, (_, c) => {
-                if ((r == 0 || r == rows - 1) || (c == 0 || c == cols - 1)) return -100;
-                else return -1;
+                if ((r == 0 || r == rows - 1) || (c == 0 || c == cols - 1)) return -10;
+                else return -0.1;
             });
         })
     }
@@ -38,12 +38,29 @@ export default function Build() {
 
     function fillCell(loc, value) {
         console.log("cell with loc, val : ", loc, value);
-        setMazeGrid(prevMazeGrid => {
-            let newMazeGrid = [...prevMazeGrid];
-            if ((loc[0] == 0 || loc[0] == mazeDims.rows - 1) || (loc[1] == 0 || loc[1] == mazeDims.cols - 1)) return prevMazeGrid;
-            newMazeGrid[loc[0]][loc[1]] = selectedTool;
-            return newMazeGrid;
-        })
+        // console.log(selectedTool)
+        if (selectedTool == 100) {
+            // console.log("yeayyy")
+            if (mazeGrid[loc[0]][loc[1]] != -10) {
+                // console.log("kwfklsfjl")
+                console.log(loc, goalLocation)
+                setMazeGrid(prevMazeGrid => {
+                    let newMazeGrid = [...prevMazeGrid];
+                    newMazeGrid[loc[0]][loc[1]] = selectedTool;
+                    if (goalLocation) newMazeGrid[goalLocation[0]][goalLocation[1]] = -0.1;
+                    return newMazeGrid;
+                });
+                setGoalLocation(loc);
+            }
+        }
+        else {
+            setMazeGrid(prevMazeGrid => {
+                let newMazeGrid = [...prevMazeGrid];
+                if ((loc[0] == 0 || loc[0] == mazeDims.rows - 1) || (loc[1] == 0 || loc[1] == mazeDims.cols - 1)) return prevMazeGrid;
+                newMazeGrid[loc[0]][loc[1]] = selectedTool;
+                return newMazeGrid;
+            })
+        }
     }
 
 
@@ -74,7 +91,7 @@ export default function Build() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({mazeDimensions: mazeDims, mazeGrid: mazeGrid})
+            body: JSON.stringify({ mazeDimensions: mazeDims, mazeGrid: mazeGrid })
         });
         console.log("bhej diya")
     }
@@ -93,6 +110,16 @@ export default function Build() {
     }) ?? null;
 
     //   console.log(mazeGrid);
+    const toolBarCells = toolArray.map((tcell, idx) =>
+        <ToolBarCell
+            key={idx}
+            name={tcell.name}
+            icon={tcell.icon}
+            value={tcell.value}
+            active={tcell.active}
+            onClick={selectTool}
+        />
+    )
     console.log("sel tool with value : ", selectedTool);
 
 
@@ -103,30 +130,7 @@ export default function Build() {
                 {mazeGridCells}
             </div>
             <div className="tool-bar">
-                <ToolBarCell
-                    // tool={toolArray[0]}
-                    name={toolArray[0].name}
-                    icon={toolArray[0].icon}
-                    value={toolArray[0].value}
-                    active={toolArray[0].active}
-                    onClick={selectTool}
-                />
-                <ToolBarCell
-                    // tool={toolArray[0]}
-                    name={toolArray[1].name}
-                    icon={toolArray[1].icon}
-                    value={toolArray[1].value}
-                    active={toolArray[1].active}
-                    onClick={selectTool}
-                />
-                <ToolBarCell
-                    // tool={toolArray[0]}
-                    name={toolArray[2].name}
-                    icon={toolArray[2].icon}
-                    value={toolArray[2].value}
-                    active={toolArray[2].active}
-                    onClick={selectTool}
-                />
+                {toolBarCells}
             </div>
             <button onClick={sendMazeDetails}>Send Details</button>
         </div>

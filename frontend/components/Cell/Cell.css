@@ -24,6 +24,10 @@
 .wall {
     background-color: #fff;
 }
+.goal {
+    /* background-color: #fff; */
+    border-color:aquamarine;
+}
 
 
 /* .cell:hover {

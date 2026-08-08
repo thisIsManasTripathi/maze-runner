@@ -19,6 +19,9 @@ class GridWorld:
 
             print(e)
 
+        # print("Environment set!")
+        # print(self.mapMatrix)
+
     def setNonTerminalStates(self):
         self.nonTerminalStates = []
         for i in range(self.nrows):
@@ -42,6 +45,7 @@ class Agent():
         self.N = np.zeros((nrows, ncols, 4))
         self.policy = np.full((nrows, ncols, 4), 0.25)
 
+
     def move(self, action:str, pos: tuple):
 
         match(action):
@@ -56,30 +60,48 @@ class Agent():
                 
         return next_state
 
-    def getSimplePolicy(self, symbolic=False):
+    def getPolicy(self, ptype: str = 'simple'):
         
-        if symbolic:
-            policyH = np.full((self.rowStates,self.colStates), "")
-            for i in range(1, self.rowStates-1):
-                for j in range(1, self.colStates-1):
-                    # print(f"{(i,j)=}")
-                    policyH[i,j] = self.actionsSymbolic[np.argmax(self.policy[i,j])]
+        match (ptype):
+            case 'simple':
+                policyH = np.full((self.rowStates,self.colStates), "") #policyH(uman readable)
+                for i in range(1, self.rowStates-1):
+                    for j in range(1, self.colStates-1):
+                        # print(f"{(i,j)=}")
+                        policyH[i,j] = self.actionsSymbolic[np.argmax(self.policy[i,j])]
 
-            return policyH
+                return policyH
+            case 'serio':
+                policyA = np.zeros(shape=(self.rowStates, self.colStates, 2)) #policyA(ctionable)
+                for i in range(1, self.rowStates-1):
+                    for j in range(1, self.colStates-1):
+                        action = np.argmax(self.policy[i,j])
+                        match (action):
+                            case 0:
+                                value = [-1,0]
+                            case 1:
+                                value = [1,0]
+                            case 2:
+                                value = [0,-1]
+                            case _:
+                                value = [0,1]
+
+                        policyA[i, j] = value
+
+                return policyA
 
 
 class MCAgent(Agent):
 
-
     def __init__(self, numStates: int):
-        super().__init__(numStates)
+        pass
 
 
 class Trainer():
 
     rng = np.random.default_rng()
 
-    def __init__(self, numRounds: int = 15, numEpisodes:int = 1000, gamma: float = 0.9, epsilon: float = 0.21):
+    def __init__(self, numRounds: int = 15, numEpisodes:int = 750, gamma: float = 0.9, epsilon: float = 0.1):
         self.numRounds = numRounds
         self.numEpisodes = numEpisodes
         self.gamma = gamma
@@ -97,7 +119,7 @@ class Trainer():
     def generate_episode(self, state, agent, environment):
         episode = []
         
-        while (state != environment.goalLoc and len(episode)<4*len(environment.nonTerminalStates)):
+        while (state != environment.goalLoc and len(episode)<100):
 
 
             # print(actions_prob)
@@ -146,7 +168,7 @@ class Trainer():
             for i in range(self.numEpisodes):
                 episode = self.generate_episode(rm.choice(environment.nonTerminalStates), agent, environment)
                 # print(episode[-1][:-1])
-                if (episode[-1][:-1] == [6,6]).all():
+                if (episode[-1][:-1] == environment.goalLoc).all():
                     self.goalCount += 1
                 else:
                     self.crashCount += 1
@@ -186,26 +208,42 @@ class Trainer():
         return agent.policy
     
 pathVal = -0.1
-arr = [[-10, -10, -10, -10, -10, -10, -10, -10], 
-             [-10, pathVal, pathVal, pathVal, pathVal, pathVal, pathVal, -10], 
-             [-10, pathVal, -10, pathVal, -10, -10, pathVal, -10], 
-             [-10, pathVal, -10, pathVal, pathVal, -10, pathVal, -10], 
-             [-10, pathVal, pathVal, -10, -10, pathVal, pathVal, -10], 
-             [-10, -10, pathVal, pathVal, pathVal, -10, -10, -10], 
-             [-10, pathVal, -10, -10, pathVal, pathVal, 100, -10], 
-             [-10, -10, -10, -10, -10, -10, -10, -10]]
+# # arr = [[-10, -10, -10, -10, -10, -10, -10, -10], 
+# #              [-10, pathVal, pathVal, pathVal, pathVal, pathVal, pathVal, -10], 
+# #              [-10, pathVal, -10, pathVal, -10, -10, pathVal, -10], 
+# #              [-10, pathVal, -10, pathVal, pathVal, -10, pathVal, -10], 
+# #              [-10, pathVal, pathVal, -10, -10, pathVal, pathVal, -10], 
+# #              [-10, -10, pathVal, pathVal, pathVal, -10, -10, -10], 
+# #              [-10, pathVal, -10, -10, pathVal, pathVal, 100, -10], 
+# #              [-10, -10, -10, -10, -10, -10, -10, -10]]
+arr = [[-10,   -10,   -10,   -10,   -10,   -10,   -10,   -10,  ],
+ [-10,    pathVal, -10,    pathVal, -10,   -10,   -10,   -10  ],
+ [-10,    pathVal,  pathVal,  pathVal, -10,    10,  pathVal, -10  ],
+ [-10,    pathVal, -10,    pathVal, -10,   -10,    pathVal, -10  ],
+ [-10,    pathVal, -10,    pathVal, -10,    pathVal,  pathVal, -10  ],
+ [-10,    pathVal, -10,    pathVal,  pathVal,  pathVal, -10,   -10  ],
+ [-10,    pathVal, -10,    pathVal, -10,   -10,   -10,   -10  ],
+ [-10,   -10,   -10,   -10,   -10,   -10,   -10,   -10  ]]
+# arr = [[-10, -10, -10, -10, -10, -10, -10, -10],
+#         [-10, -0.1, -10, -0.1, -10, 100, -0.1, -10],
+#         [-10, -0.1, -0.1, -0.1, -10, -10, -0.1, -10],
+#         [-10, -0.1, -10, -0.1, -10, -0.1, -0.1, -10],
+#         [-10, -0.1, -10, -0.1, -0.1, -0.1, -10, -10],
+#         [-10, -0.1, -10, -0.1, -10, -0.1, -0.1, -10],
+#         [-10, -0.1, -10, -0.1, -10, -10, -0.1, -10],
+#         [-10, -10, -10, -10, -10, -10, -10, -10]]
 
-'''[[-100, -100, -100, -100, -100, -100, -100, -100], 
+# # '''[[-100, -100, -100, -100, -100, -100, -100, -100], 
 
-             [-100, 0, 0, 0, 0, 0, 0, -100], 
-             [-100, 0, -100, 0, -100, -100, 0, -100], 
-             [-100, 0, -100, 0, 0, -100, 0, -100], 
-             [-100, 0, 0, -100, -100, 0, 0, -100], 
-             [-100, -100, 0, 0, 0, -100, -100, -100], 
-             [-100, 0, -100, -100, 0, 0, 10, -100], 
-             [-100, -100, -100, -100, -100, -100, -100, -100]]'''
-
-grid = GridWorld(arr, (6,6))
+# #              [-100, 0, 0, 0, 0, 0, 0, -100], 
+# #              [-100, 0, -100, 0, -100, -100, 0, -100], 
+# #              [-100, 0, -100, 0, 0, -100, 0, -100], 
+# #              [-100, 0, 0, -100, -100, 0, 0, -100], 
+# #              [-100, -100, 0, 0, 0, -100, -100, -100], 
+# #              [-100, 0, -100, -100, 0, 0, 10, -100], 
+# #              [-100, -100, -100, -100, -100, -100, -100, -100]]'''
+# # print("ran from file")
+grid = GridWorld(arr, (1,5))
 
 
 grid.setNonTerminalStates()
@@ -216,12 +254,13 @@ trainer = Trainer(numRounds=10,numEpisodes=200)
 # trainer = Trainer()
 trainer.train(agentVinod, grid)
 # print(agentVinod.policy)
-print(agentVinod.getSimplePolicy(True))
+print(agentVinod.getPolicy('simple'))
+print(agentVinod.getPolicy('serio'))
 
-print(f"{trainer.crashCount=}")
-print(f"{trainer.goalCount=}")
-print(np.max(agentVinod.Q))
-print(np.min(agentVinod.Q))
-print(np.mean(agentVinod.Q))
+# print(f"{trainer.crashCount=}")
+# print(f"{trainer.goalCount=}")
+# print(np.max(agentVinod.Q))
+# print(np.min(agentVinod.Q))
+# print(np.mean(agentVinod.Q))
 
 
