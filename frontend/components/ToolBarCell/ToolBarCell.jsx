@@ -5,7 +5,7 @@ export default function ToolBarCell({ name, icon, value, active, onClick }) {
         <div
             className={`toolbar-cell ${active ? "active" : ""}`}
             title={name}
-            onClick={() => onClick(value)}
+            onClick={() => onClick(name)}
         >
             {icon}
         </div>

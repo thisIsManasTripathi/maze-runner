@@ -206,61 +206,63 @@ class Trainer():
             # print(agent.getSimplePolicy(True))
 
         return agent.policy
-    
-pathVal = -0.1
-# # arr = [[-10, -10, -10, -10, -10, -10, -10, -10], 
-# #              [-10, pathVal, pathVal, pathVal, pathVal, pathVal, pathVal, -10], 
-# #              [-10, pathVal, -10, pathVal, -10, -10, pathVal, -10], 
-# #              [-10, pathVal, -10, pathVal, pathVal, -10, pathVal, -10], 
-# #              [-10, pathVal, pathVal, -10, -10, pathVal, pathVal, -10], 
-# #              [-10, -10, pathVal, pathVal, pathVal, -10, -10, -10], 
-# #              [-10, pathVal, -10, -10, pathVal, pathVal, 100, -10], 
-# #              [-10, -10, -10, -10, -10, -10, -10, -10]]
-arr = [[-10,   -10,   -10,   -10,   -10,   -10,   -10,   -10,  ],
- [-10,    pathVal, -10,    pathVal, -10,   -10,   -10,   -10  ],
- [-10,    pathVal,  pathVal,  pathVal, -10,    10,  pathVal, -10  ],
- [-10,    pathVal, -10,    pathVal, -10,   -10,    pathVal, -10  ],
- [-10,    pathVal, -10,    pathVal, -10,    pathVal,  pathVal, -10  ],
- [-10,    pathVal, -10,    pathVal,  pathVal,  pathVal, -10,   -10  ],
- [-10,    pathVal, -10,    pathVal, -10,   -10,   -10,   -10  ],
- [-10,   -10,   -10,   -10,   -10,   -10,   -10,   -10  ]]
-# arr = [[-10, -10, -10, -10, -10, -10, -10, -10],
-#         [-10, -0.1, -10, -0.1, -10, 100, -0.1, -10],
-#         [-10, -0.1, -0.1, -0.1, -10, -10, -0.1, -10],
-#         [-10, -0.1, -10, -0.1, -10, -0.1, -0.1, -10],
-#         [-10, -0.1, -10, -0.1, -0.1, -0.1, -10, -10],
-#         [-10, -0.1, -10, -0.1, -10, -0.1, -0.1, -10],
-#         [-10, -0.1, -10, -0.1, -10, -10, -0.1, -10],
-#         [-10, -10, -10, -10, -10, -10, -10, -10]]
-
-# # '''[[-100, -100, -100, -100, -100, -100, -100, -100], 
-
-# #              [-100, 0, 0, 0, 0, 0, 0, -100], 
-# #              [-100, 0, -100, 0, -100, -100, 0, -100], 
-# #              [-100, 0, -100, 0, 0, -100, 0, -100], 
-# #              [-100, 0, 0, -100, -100, 0, 0, -100], 
-# #              [-100, -100, 0, 0, 0, -100, -100, -100], 
-# #              [-100, 0, -100, -100, 0, 0, 10, -100], 
-# #              [-100, -100, -100, -100, -100, -100, -100, -100]]'''
-# # print("ran from file")
-grid = GridWorld(arr, (1,5))
 
 
-grid.setNonTerminalStates()
-print(grid.nonTerminalStates)
-agentVinod = Agent(grid.nrows, grid.ncols)
-# print(agentVinod.policy)
-trainer = Trainer(numRounds=10,numEpisodes=200)
-# trainer = Trainer()
-trainer.train(agentVinod, grid)
-# print(agentVinod.policy)
-print(agentVinod.getPolicy('simple'))
-print(agentVinod.getPolicy('serio'))
+def test(): 
+    pathVal = -0.1
+    # # arr = [[-10, -10, -10, -10, -10, -10, -10, -10], 
+    # #              [-10, pathVal, pathVal, pathVal, pathVal, pathVal, pathVal, -10], 
+    # #              [-10, pathVal, -10, pathVal, -10, -10, pathVal, -10], 
+    # #              [-10, pathVal, -10, pathVal, pathVal, -10, pathVal, -10], 
+    # #              [-10, pathVal, pathVal, -10, -10, pathVal, pathVal, -10], 
+    # #              [-10, -10, pathVal, pathVal, pathVal, -10, -10, -10], 
+    # #              [-10, pathVal, -10, -10, pathVal, pathVal, 100, -10], 
+    # #              [-10, -10, -10, -10, -10, -10, -10, -10]]
+    arr = [[-10,   -10,   -10,   -10,   -10,   -10,   -10,   -10,  ],
+    [-10,    pathVal, -10,    pathVal, -10,   -10,   -10,   -10  ],
+    [-10,    pathVal,  pathVal,  pathVal, -10,    10,  pathVal, -10  ],
+    [-10,    pathVal, -10,    pathVal, -10,   -10,    pathVal, -10  ],
+    [-10,    pathVal, -10,    pathVal, -10,    pathVal,  pathVal, -10  ],
+    [-10,    pathVal, -10,    pathVal,  pathVal,  pathVal, -10,   -10  ],
+    [-10,    pathVal, -10,    pathVal, -10,   -10,   -10,   -10  ],
+    [-10,   -10,   -10,   -10,   -10,   -10,   -10,   -10  ]]
+    # arr = [[-10, -10, -10, -10, -10, -10, -10, -10],
+    #         [-10, -0.1, -10, -0.1, -10, 100, -0.1, -10],
+    #         [-10, -0.1, -0.1, -0.1, -10, -10, -0.1, -10],
+    #         [-10, -0.1, -10, -0.1, -10, -0.1, -0.1, -10],
+    #         [-10, -0.1, -10, -0.1, -0.1, -0.1, -10, -10],
+    #         [-10, -0.1, -10, -0.1, -10, -0.1, -0.1, -10],
+    #         [-10, -0.1, -10, -0.1, -10, -10, -0.1, -10],
+    #         [-10, -10, -10, -10, -10, -10, -10, -10]]
 
-# print(f"{trainer.crashCount=}")
-# print(f"{trainer.goalCount=}")
-# print(np.max(agentVinod.Q))
-# print(np.min(agentVinod.Q))
-# print(np.mean(agentVinod.Q))
+    # # '''[[-100, -100, -100, -100, -100, -100, -100, -100], 
+
+    # #              [-100, 0, 0, 0, 0, 0, 0, -100], 
+    # #              [-100, 0, -100, 0, -100, -100, 0, -100], 
+    # #              [-100, 0, -100, 0, 0, -100, 0, -100], 
+    # #              [-100, 0, 0, -100, -100, 0, 0, -100], 
+    # #              [-100, -100, 0, 0, 0, -100, -100, -100], 
+    # #              [-100, 0, -100, -100, 0, 0, 10, -100], 
+    # #              [-100, -100, -100, -100, -100, -100, -100, -100]]'''
+    # # print("ran from file")
+    grid = GridWorld(arr, (1,5))
+
+
+    grid.setNonTerminalStates()
+    print(grid.nonTerminalStates)
+    agentVinod = Agent(grid.nrows, grid.ncols)
+    # print(agentVinod.policy)
+    trainer = Trainer(numRounds=10,numEpisodes=200)
+    # trainer = Trainer()
+    trainer.train(agentVinod, grid)
+    # print(agentVinod.policy)
+    print(agentVinod.getPolicy('simple'))
+    print(agentVinod.getPolicy('serio'))
+
+    print(f"{trainer.crashCount=}")
+    print(f"{trainer.goalCount=}")
+    print(np.max(agentVinod.Q))
+    print(np.min(agentVinod.Q))
+    print(np.mean(agentVinod.Q))
 
 

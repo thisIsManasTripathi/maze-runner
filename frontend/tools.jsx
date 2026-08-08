@@ -4,30 +4,35 @@ import { GiGrass } from "react-icons/gi";
 
 export const tools = [
     {
-        name: "Wall",
+        name: "wall",
         icon: <GiBrickWall />,
         value: -10,
-        active: false
     },
     {
-        name: "Mud",
+        name: "mud",
         icon: <GiGrass />,
         value: -0.25,
-        active: false
 
     },
     {
-        name: "Eraser",
+        name: "eraser",
         icon: <FaEraser />,
         value: -0.1,
-        active: false
 
     },
     {
-        name: "Goal",
+        name: "goal",
         icon: <GiGolfFlag />,
         value: 100,
-        active: false
 
     },
 ];
+
+export function getBlockValue(blockName) {
+        for (const elem of tools) {
+            if (elem.name === blockName) {
+                return elem.value;
+            }
+        }
+        
+    }

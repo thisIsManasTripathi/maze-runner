@@ -2,23 +2,28 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router";
 import Cell from "../components/Cell/Cell";
 import ToolBarCell from "../components/ToolBarCell/ToolBarCell";
-import { tools } from "../tools";
+import { tools, getBlockValue } from "../tools";
 
 export default function Build() {
 
 
     const [mazeDims, setMazeDims] = useState(null);
     const [mazeGrid, setMazeGrid] = useState(null);
-    const [toolArray, setToolArray] = useState(tools);
-    const [selectedTool, setSelectedTool] = useState(null); //this will hold the object;
+    const [toolArray, setToolArray] = useState(() => {
+        return tools.map((item) => {
+            return { ...item, active: false }
+        })
+    });
     const [goalLocation, setGoalLocation] = useState(null);
     const location = useLocation();
+
+
 
     function buildEmptyWorld(rows, cols) {
         return Array.from({ length: rows }, (_, r) => {
             return Array.from({ length: cols }, (_, c) => {
-                if ((r == 0 || r == rows - 1) || (c == 0 || c == cols - 1)) return -10;
-                else return -0.1;
+                if ((r === 0 || r === rows - 1) || (c === 0 || c === cols - 1)) return getBlockValue("wall");
+                else return getBlockValue("eraser");
             });
         })
     }
@@ -36,18 +41,25 @@ export default function Build() {
 
     }, []);
 
+    function currentSelectedTool() {
+        for (const tool of toolArray) {
+            if (tool.active === true) return tool;
+        }
+        return null;
+    }
+
     function fillCell(loc, value) {
         console.log("cell with loc, val : ", loc, value);
         // console.log(selectedTool)
-        if (selectedTool == 100) {
+        if (currentSelectedTool().name === "goal") {
             // console.log("yeayyy")
-            if (mazeGrid[loc[0]][loc[1]] != -10) {
+            if (mazeGrid[loc[0]][loc[1]] != getBlockValue("wall")) {
                 // console.log("kwfklsfjl")
                 console.log(loc, goalLocation)
                 setMazeGrid(prevMazeGrid => {
                     let newMazeGrid = [...prevMazeGrid];
-                    newMazeGrid[loc[0]][loc[1]] = selectedTool;
-                    if (goalLocation) newMazeGrid[goalLocation[0]][goalLocation[1]] = -0.1;
+                    newMazeGrid[loc[0]][loc[1]] = currentSelectedTool().value;
+                    if (goalLocation) newMazeGrid[goalLocation[0]][goalLocation[1]] = getBlockValue("eraser");
                     return newMazeGrid;
                 });
                 setGoalLocation(loc);
@@ -56,32 +68,21 @@ export default function Build() {
         else {
             setMazeGrid(prevMazeGrid => {
                 let newMazeGrid = [...prevMazeGrid];
-                if ((loc[0] == 0 || loc[0] == mazeDims.rows - 1) || (loc[1] == 0 || loc[1] == mazeDims.cols - 1)) return prevMazeGrid;
-                newMazeGrid[loc[0]][loc[1]] = selectedTool;
+                if ((loc[0] === 0 || loc[0] === mazeDims.rows - 1) || (loc[1] === 0 || loc[1] === mazeDims.cols - 1)) return prevMazeGrid;
+                newMazeGrid[loc[0]][loc[1]] = currentSelectedTool().value;
                 return newMazeGrid;
             })
         }
     }
 
 
-    function selectTool(toolValue) {
-        let selTool;
-        for (const item of toolArray) {
-            if (item.value == toolValue) {
-                selTool = { ...item };
-            }
-        }
-
-        setSelectedTool(selTool.value);
-
+    function selectTool(toolName) {
         setToolArray(prevToolArray => {
-            let newToolArray = [...prevToolArray];
-            for (const element of newToolArray) {
-                element.active = (element.value == selTool.value)
-                // if (element.value == selTool.value) element.active = true;
-                // else element.active = false;
-            }
-            return newToolArray;
+            return prevToolArray.map(tool => ({
+                ...tool,
+                active: tool.name === toolName
+            }))
+
         })
     }
 
@@ -91,7 +92,7 @@ export default function Build() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ mazeDimensions: mazeDims, mazeGrid: mazeGrid })
+            body: JSON.stringify({ mazeDimensions: mazeDims, mazeGrid: mazeGrid, goalLocation: goalLocation })
         });
         console.log("bhej diya")
     }
@@ -120,7 +121,7 @@ export default function Build() {
             onClick={selectTool}
         />
     )
-    console.log("sel tool with value : ", selectedTool);
+    console.log("sel tool with value : ", currentSelectedTool()?.value ?? "not selected yet");
 
 
     return (

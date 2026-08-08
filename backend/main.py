@@ -20,27 +20,29 @@ app.add_middleware(
 class MazeConfig(BaseModel):
     mazeDimensions: dict
     mazeGrid: list
+    goalLocation: list
 
-def solveMaze(mazeGridInput: list, goal: tuple = (1,5)):
-    grid = GridWorld(gridInp=mazeGridInput, goalLoc=goal)
+def solveMaze(mazeGridInput: list, goalLoc: tuple):
+    grid = GridWorld(gridInp=mazeGridInput, goalLoc=goalLoc)
     grid.setNonTerminalStates()
     agent = Agent(grid.nrows, grid.ncols)
     trainer = Trainer()
     trainer.train(agent=agent, environment=grid)
-    # print(agent.getSimplePolicy(True))
+    print(agent.getPolicy('simple'))
     print(f"{trainer.crashCount=}")
     print(f"{trainer.goalCount=}")
     print(np.max(agent.Q))
     print(np.min(agent.Q))
     print(np.mean(agent.Q))
+    return agent.getPolicy('serio')
 
 
 @app.post("/api/configs/")
 def getConfig(mazeConfig: MazeConfig):
     # return ["Jai", "Hind"]
     print(mazeConfig.mazeGrid)
-    solveMaze(mazeConfig.mazeGrid)
-    return {"project": "maze-runner", **mazeConfig.model_dump()}
+    policy = solveMaze(mazeConfig.mazeGrid, tuple(mazeConfig.goalLocation)).tolist()
+    return {"policy": policy}
 
 
 
