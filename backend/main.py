@@ -42,6 +42,7 @@ def getConfig(mazeConfig: MazeConfig):
     # return ["Jai", "Hind"]
     print(mazeConfig.mazeGrid)
     policy = solveMaze(mazeConfig.mazeGrid, tuple(mazeConfig.goalLocation)).tolist()
+    print(policy)
     return {"policy": policy}
 
 

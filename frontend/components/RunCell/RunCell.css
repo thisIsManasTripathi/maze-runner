@@ -1,0 +1,44 @@
+.run-cell {
+    width: 32px;
+    height: 32px;
+
+    box-sizing: border-box;
+
+    background: #000;
+    border: 1px solid #444;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+}
+
+.run-cell.active {
+    background: rgb(234, 29, 29);
+    opacity: 1;
+}
+
+.cell-reward {
+    color: #fff;
+    font-size: 10px;
+    line-height: 1;
+}
+
+.run-cell.wall {
+    background-color: #fff;
+}
+.run-cell.goal {
+    /* background-color: #fff; */
+    border-color:aquamarine;
+}
+
+.cell-policy {
+    position: absolute;
+
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+
+    pointer-events: none;
+}

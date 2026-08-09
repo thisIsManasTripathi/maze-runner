@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import Cell from "../components/Cell/Cell";
 import ToolBarCell from "../components/ToolBarCell/ToolBarCell";
 import { tools, getBlockValue } from "../tools";
@@ -15,6 +15,7 @@ export default function Build() {
         })
     });
     const [goalLocation, setGoalLocation] = useState(null);
+    const [policy, setPolicy] = useState(null);
     const location = useLocation();
 
 
@@ -49,17 +50,18 @@ export default function Build() {
     }
 
     function fillCell(loc, value) {
-        console.log("cell with loc, val : ", loc, value);
+        // console.log("cell with loc, val : ", loc, value);
         // console.log(selectedTool)
         if (currentSelectedTool().name === "goal") {
             // console.log("yeayyy")
             if (mazeGrid[loc[0]][loc[1]] != getBlockValue("wall")) {
                 // console.log("kwfklsfjl")
+                
                 console.log(loc, goalLocation)
                 setMazeGrid(prevMazeGrid => {
                     let newMazeGrid = [...prevMazeGrid];
                     newMazeGrid[loc[0]][loc[1]] = currentSelectedTool().value;
-                    if (goalLocation) newMazeGrid[goalLocation[0]][goalLocation[1]] = getBlockValue("eraser");
+                    if (goalLocation && goalLocation != loc) newMazeGrid[goalLocation[0]][goalLocation[1]] = getBlockValue("eraser");
                     return newMazeGrid;
                 });
                 setGoalLocation(loc);
@@ -87,43 +89,52 @@ export default function Build() {
     }
 
     async function sendMazeDetails() {
-        await fetch("http://localhost:8000/api/configs/", {
+        const response = await fetch("http://localhost:8000/api/configs/", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ mazeDimensions: mazeDims, mazeGrid: mazeGrid, goalLocation: goalLocation })
         });
-        console.log("bhej diya")
+        const policyRcvd =  await response.json();
+        setPolicy(policyRcvd.policy);
+        console.log("bhej diya");
     }
-
+    
+    const navigate = useNavigate();
+    async function runMaze(){
+        policy?navigate('/run', {state : {mazeDims: mazeDims, rewardMatrix: mazeGrid, policy:policy, goalLoc: goalLocation }}):console.log("meh")
+    }
+    
     const mazeGridCells = mazeGrid?.flat().map((item, idx) => {
         const rowNum = Math.floor(idx / mazeDims.cols);
         const colNum = idx % mazeDims.cols;
         return (
             <Cell
-                key={`r${Math.floor(rowNum)}-${colNum}`}
-                loc={[rowNum, colNum]}
-                value={item}
-                handleClick={fillCell}
+            key={`r${Math.floor(rowNum)}-${colNum}`}
+            loc={[rowNum, colNum]}
+            value={item}
+            handleClick={fillCell}
             />
         );
     }) ?? null;
-
-    //   console.log(mazeGrid);
+    
+    //   console.log(mazeGrid);;
+    
     const toolBarCells = toolArray.map((tcell, idx) =>
         <ToolBarCell
-            key={idx}
-            name={tcell.name}
-            icon={tcell.icon}
-            value={tcell.value}
-            active={tcell.active}
-            onClick={selectTool}
-        />
-    )
-    console.log("sel tool with value : ", currentSelectedTool()?.value ?? "not selected yet");
+    key={idx}
+    name={tcell.name}
+    icon={tcell.icon}
+    value={tcell.value}
+    active={tcell.active}
+    onClick={selectTool}
+    />
+)
+    // console.log("sel tool with value : ", currentSelectedTool()?.value ?? "not selected yet");
 
-
+    
+    // console.log(policy);
     return (
         <div className="home">
             {/* <h1>Humble.</h1> */}
@@ -134,6 +145,7 @@ export default function Build() {
                 {toolBarCells}
             </div>
             <button onClick={sendMazeDetails}>Send Details</button>
+            <button onClick={runMaze}>RUN</button>
         </div>
     );
 }

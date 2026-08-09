@@ -72,7 +72,7 @@ class Agent():
 
                 return policyH
             case 'serio':
-                policyA = np.zeros(shape=(self.rowStates, self.colStates, 2)) #policyA(ctionable)
+                policyA = np.zeros(shape=(self.rowStates, self.colStates, 2), dtype='h') #policyA(ctionable)
                 for i in range(1, self.rowStates-1):
                     for j in range(1, self.colStates-1):
                         action = np.argmax(self.policy[i,j])
@@ -89,6 +89,9 @@ class Agent():
                         policyA[i, j] = value
 
                 return policyA
+
+            case _:
+                return np.array([0])
 
 
 class MCAgent(Agent):

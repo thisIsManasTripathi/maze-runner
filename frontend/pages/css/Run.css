@@ -1,0 +1,90 @@
+.run-page {
+    min-height: 100vh;
+    background: #000;
+    color: #fff;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 40px;
+    font-family: "Courier New", monospace;
+}
+
+.run-title {
+    margin: 0 0 40px;
+
+    font-size: 28px;
+    letter-spacing: 4px;
+    font-weight: bold;
+}
+
+.run-grid {
+    border: 4px solid #fff;
+    background: #000;
+}
+
+.run-cell {
+    width: 32px;
+    height: 32px;
+
+    box-sizing: border-box;
+
+    background: #000;
+    border: 1px solid #444;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+}
+
+.cell-reward {
+    color: #fff;
+    font-size: 10px;
+    line-height: 1;
+}
+
+.cell-policy {
+    position: absolute;
+
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+
+    pointer-events: none;
+}
+
+.run-controls {
+    display: flex;
+    gap: 16px;
+
+    margin-top: 32px;
+}
+
+.run-controls button {
+    min-width: 110px;
+    padding: 12px 20px;
+
+    background: #000;
+    color: #fff;
+
+    border: 3px solid #fff;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 2px;
+
+    cursor: pointer;
+}
+
+.run-controls button:hover {
+    background: #fff;
+    color: #000;
+}
+
+.run-controls button:active {
+    transform: translate(2px, 2px);
+}
