@@ -35,4 +35,19 @@ export function getBlockValue(blockName) {
             }
         }
         
+}
+
+export const directions = ["UP", "DOWN", "LEFT", "RIGHT"];
+export const gameStates = ["RUNNING", "VICTORY", "COLLISION"];
+export const moveStepDuration = 400;
+
+export function getDirectionFromOffset([roff, coff]){
+    console.log(roff, coff);
+    if (roff !== 0) {
+        if (roff === 1) return directions[1];
+        else return directions[0];
+    } else {
+        if (coff === 1) return directions[3];
+        else return directions[2];
     }
+}

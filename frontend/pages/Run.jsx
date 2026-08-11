@@ -1,16 +1,20 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router";
 import RunCell from "../components/RunCell/RunCell";
+import { directions, getDirectionFromOffset, moveStepDuration } from "../tools";
+import { gameStates } from "../tools";
 import "./css/Run.css";
+import Fallback from "../components/Fallback/Fallback";
 
 export default function Run() {
     const location = useLocation();
     const { rewardMatrix, policy, mazeDims, goalLoc } = location.state ?? {};
-
+    const [directionState, setDirectionState] = useState(null);
+    const [gameState, setGameState] = useState();
     const [currentLoc, setCurrentLoc] = useState([1, 1]);
     const [isRunning, setIsRunning] = useState(false);
 
-    console.log(policy)
+    // console.log(directionState)
 
     // Check if goal is reached
     const isAtGoal = currentLoc && goalLoc && 
@@ -24,17 +28,21 @@ export default function Run() {
         const timer = setTimeout(() => {
             setCurrentLoc(([r, c]) => {
                 const moveOffset = policy?.[r]?.[c] ?? [0, 0];
-                console.log(currentLoc)
+                // console.log(currentLoc)
+                setDirectionState(getDirectionFromOffset(moveOffset));
                 // console.log([r + moveOffset[0], c + moveOffset[1]])
+
                 return [r + moveOffset[0], c + moveOffset[1]];
             });
-        }, 800); // adjust animation speed (ms)
+        }, moveStepDuration); // adjust animation speed (ms)
 
         return () => clearTimeout(timer); // automatically handles cleanup on state change or unmount
     }, [isRunning, currentLoc, isAtGoal, policy]);
 
     if (!rewardMatrix || !policy) {
-        return <div className="run-page">No maze session found. Please build a maze first.</div>;
+        return (
+            <Fallback />
+        )
     }
 
     return (

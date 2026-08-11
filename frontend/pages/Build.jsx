@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router";
 import Cell from "../components/Cell/Cell";
 import ToolBarCell from "../components/ToolBarCell/ToolBarCell";
 import { tools, getBlockValue } from "../tools";
+import Fallback from "../components/Fallback/Fallback";
 
 export default function Build() {
 
@@ -31,8 +32,11 @@ export default function Build() {
 
     useEffect(() => {
 
-        const { rows, cols } = location.state;
+        if (!(location?.state ?? null)) return;
+
+        const { rows, cols } = location.state ?? {};
         console.log(rows, cols);
+        // if ()
         setMazeGrid((prev) => {
             const grid = buildEmptyWorld(rows + 2, cols + 2);
             // console.log("grid : ", grid);
@@ -102,6 +106,7 @@ export default function Build() {
     }
     
     const navigate = useNavigate();
+
     async function runMaze(){
         policy?navigate('/run', {state : {mazeDims: mazeDims, rewardMatrix: mazeGrid, policy:policy, goalLoc: goalLocation }}):console.log("meh")
     }
@@ -134,7 +139,16 @@ export default function Build() {
     // console.log("sel tool with value : ", currentSelectedTool()?.value ?? "not selected yet");
 
     
-    // console.log(policy);
+    // console.log(mazeDims);
+    if (mazeDims === null) {
+        console.log("maze dims don't exist")
+        return (
+            <Fallback />
+        )
+    }
+    else {
+
+    
     return (
         <div className="home">
             {/* <h1>Humble.</h1> */}
@@ -148,4 +162,4 @@ export default function Build() {
             <button onClick={runMaze}>RUN</button>
         </div>
     );
-}
+} }
