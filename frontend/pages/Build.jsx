@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
+import { FaBan } from "react-icons/fa";
+
 import Cell from "../components/Cell/Cell";
 import ToolBarCell from "../components/ToolBarCell/ToolBarCell";
 import { tools, getBlockValue } from "../tools";
 import Fallback from "../components/Fallback/Fallback";
 
-export default function Build() {
+import "./css/Build.css";
 
+export default function Build() {
 
     const [mazeDims, setMazeDims] = useState(null);
     const [mazeGrid, setMazeGrid] = useState(null);
@@ -19,13 +22,28 @@ export default function Build() {
     const [policy, setPolicy] = useState(null);
     const location = useLocation();
 
+    /*
+     * UI state only
+     */
+    const [zoom, setZoom] = useState(1);
+    const [pan, setPan] = useState({ x: 0, y: 0 });
+    const [cursor, setCursor] = useState({
+        x: 0,
+        y: 0,
+        visible: false,
+        blocked: false
+    });
+    const [isPanning, setIsPanning] = useState(false);
+    const [panStart, setPanStart] = useState(null);
 
 
     function buildEmptyWorld(rows, cols) {
         return Array.from({ length: rows }, (_, r) => {
             return Array.from({ length: cols }, (_, c) => {
-                if ((r === 0 || r === rows - 1) || (c === 0 || c === cols - 1)) return getBlockValue("wall");
-                else return getBlockValue("eraser");
+                if ((r === 0 || r === rows - 1) || (c === 0 || c === cols - 1))
+                    return getBlockValue("wall");
+                else
+                    return getBlockValue("eraser");
             });
         })
     }
@@ -35,16 +53,19 @@ export default function Build() {
         if (!(location?.state ?? null)) return;
 
         const { rows, cols } = location.state ?? {};
-        console.log(rows, cols);
-        // if ()
+
         setMazeGrid((prev) => {
             const grid = buildEmptyWorld(rows + 2, cols + 2);
-            // console.log("grid : ", grid);
             return grid;
         });
-        setMazeDims({ rows: rows + 2, cols: cols + 2 });
+
+        setMazeDims({
+            rows: rows + 2,
+            cols: cols + 2
+        });
 
     }, []);
+
 
     function currentSelectedTool() {
         for (const tool of toolArray) {
@@ -53,29 +74,44 @@ export default function Build() {
         return null;
     }
 
+
     function fillCell(loc, value) {
-        // console.log("cell with loc, val : ", loc, value);
-        // console.log(selectedTool)
         if (currentSelectedTool().name === "goal") {
-            // console.log("yeayyy")
+
             if (mazeGrid[loc[0]][loc[1]] != getBlockValue("wall")) {
-                // console.log("kwfklsfjl")
-                
-                console.log(loc, goalLocation)
+
                 setMazeGrid(prevMazeGrid => {
                     let newMazeGrid = [...prevMazeGrid];
-                    newMazeGrid[loc[0]][loc[1]] = currentSelectedTool().value;
-                    if (goalLocation && goalLocation != loc) newMazeGrid[goalLocation[0]][goalLocation[1]] = getBlockValue("eraser");
+
+                    newMazeGrid[loc[0]][loc[1]] =
+                        currentSelectedTool().value;
+
+                    if (goalLocation && goalLocation != loc)
+                        newMazeGrid[goalLocation[0]][goalLocation[1]] =
+                            getBlockValue("eraser");
+
                     return newMazeGrid;
                 });
+
                 setGoalLocation(loc);
             }
+
         }
         else {
+
             setMazeGrid(prevMazeGrid => {
+
                 let newMazeGrid = [...prevMazeGrid];
-                if ((loc[0] === 0 || loc[0] === mazeDims.rows - 1) || (loc[1] === 0 || loc[1] === mazeDims.cols - 1)) return prevMazeGrid;
-                newMazeGrid[loc[0]][loc[1]] = currentSelectedTool().value;
+
+                if (
+                    (loc[0] === 0 || loc[0] === mazeDims.rows - 1) ||
+                    (loc[1] === 0 || loc[1] === mazeDims.cols - 1)
+                )
+                    return prevMazeGrid;
+
+                newMazeGrid[loc[0]][loc[1]] =
+                    currentSelectedTool().value;
+
                 return newMazeGrid;
             })
         }
@@ -88,9 +124,9 @@ export default function Build() {
                 ...tool,
                 active: tool.name === toolName
             }))
-
         })
     }
+
 
     async function sendMazeDetails() {
         const response = await fetch("http://localhost:8000/api/configs/", {
@@ -98,68 +134,251 @@ export default function Build() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ mazeDimensions: mazeDims, mazeGrid: mazeGrid, goalLocation: goalLocation })
+            body: JSON.stringify({
+                mazeDimensions: mazeDims,
+                mazeGrid: mazeGrid,
+                goalLocation: goalLocation
+            })
         });
-        const policyRcvd =  await response.json();
+
+        const policyRcvd = await response.json();
+
         setPolicy(policyRcvd.policy);
+
         console.log("bhej diya");
     }
-    
+
+
     const navigate = useNavigate();
 
-    async function runMaze(){
-        policy?navigate('/run', {state : {mazeDims: mazeDims, rewardMatrix: mazeGrid, policy:policy, goalLoc: goalLocation }}):console.log("meh")
+    async function runMaze() {
+        policy
+            ? navigate('/run', {
+                state: {
+                    mazeDims: mazeDims,
+                    rewardMatrix: mazeGrid,
+                    policy: policy,
+                    goalLoc: goalLocation
+                }
+            })
+            : console.log("meh")
     }
-    
+
+
+    /*
+     * -------------------------
+     * UI: ZOOM
+     * -------------------------
+     */
+
+    function handleWheel(e) {
+        e.preventDefault();
+
+        const zoomAmount = e.deltaY > 0 ? -0.03 : 0.03;
+
+        setZoom(prev => {
+            const next = prev + zoomAmount;
+            return Math.min(Math.max(next, 0.5), 3);
+        });
+    }
+
+
+    /*
+     * -------------------------
+     * UI: PAN
+     * -------------------------
+     */
+
+    function handlePanStart(e) {
+
+        // Don't start panning when clicking a cell
+        if (e.target.closest(".cell"))
+            return;
+
+        setIsPanning(true);
+
+        setPanStart({
+            mouseX: e.clientX,
+            mouseY: e.clientY,
+            panX: pan.x,
+            panY: pan.y
+        });
+    }
+
+
+    function handlePanMove(e) {
+
+        if (!isPanning || !panStart)
+            return;
+
+        setPan({
+            x: panStart.panX + (e.clientX - panStart.mouseX),
+            y: panStart.panY + (e.clientY - panStart.mouseY)
+        });
+    }
+
+
+    function handlePanEnd() {
+        setIsPanning(false);
+        setPanStart(null);
+    }
+
+
+    /*
+     * -------------------------
+     * UI: CUSTOM CURSOR
+     * -------------------------
+     */
+
+    function handleMazeMouseMove(e) {
+
+        const rect = e.currentTarget.getBoundingClientRect();
+
+        setCursor({
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+            visible: true,
+            blocked: e.target.closest(".maze-wall") !== null
+        });
+    }
+
+
+    function hideCursor() {
+        setCursor(prev => ({
+            ...prev,
+            visible: false
+        }));
+    }
+
+
     const mazeGridCells = mazeGrid?.flat().map((item, idx) => {
+
         const rowNum = Math.floor(idx / mazeDims.cols);
         const colNum = idx % mazeDims.cols;
+
+        const isOuterWall =
+            rowNum === 0 ||
+            rowNum === mazeDims.rows - 1 ||
+            colNum === 0 ||
+            colNum === mazeDims.cols - 1;
+
         return (
-            <Cell
-            key={`r${Math.floor(rowNum)}-${colNum}`}
-            loc={[rowNum, colNum]}
-            value={item}
-            handleClick={fillCell}
-            />
+            <div
+                key={`wrapper-r${rowNum}-c${colNum}`}
+                className={isOuterWall ? "maze-wall" : ""}
+                style={{ display: "contents" }}
+            >
+                <Cell
+                    key={`r${rowNum}-${colNum}`}
+                    loc={[rowNum, colNum]}
+                    value={item}
+                    handleClick={fillCell}
+                />
+            </div>
         );
     }) ?? null;
-    
-    //   console.log(mazeGrid);;
-    
+
+
     const toolBarCells = toolArray.map((tcell, idx) =>
         <ToolBarCell
-    key={idx}
-    name={tcell.name}
-    icon={tcell.icon}
-    value={tcell.value}
-    active={tcell.active}
-    onClick={selectTool}
-    />
-)
-    // console.log("sel tool with value : ", currentSelectedTool()?.value ?? "not selected yet");
+            key={idx}
+            name={tcell.name}
+            icon={tcell.icon}
+            value={tcell.value}
+            active={tcell.active}
+            onClick={selectTool}
+        />
+    );
 
-    
-    // console.log(mazeDims);
+
     if (mazeDims === null) {
-        console.log("maze dims don't exist")
         return (
             <Fallback />
         )
     }
-    else {
 
-    
+
+    const selectedTool = currentSelectedTool();
+
+
     return (
-        <div className="home">
-            {/* <h1>Humble.</h1> */}
-            <div className="maze-grid" style={{ display: "grid", gridTemplateColumns: `repeat(${mazeDims?.cols ?? 0}, 32px)` }}>
-                {mazeGridCells}
+        <div className="build-page">
+
+            <div
+                className={`maze-viewport ${isPanning ? "panning" : ""
+                    } ${selectedTool ? "tool-selected" : ""}`}
+                onWheel={handleWheel}
+                onMouseDown={handlePanStart}
+                onMouseMove={(e) => {
+                    handlePanMove(e);
+                    handleMazeMouseMove(e);
+                }}
+                onMouseUp={handlePanEnd}
+                onMouseLeave={() => {
+                    handlePanEnd();
+                    hideCursor();
+                }}
+                onMouseEnter={(e) => {
+                    handleMazeMouseMove(e);
+                }}
+            >
+
+                <div
+                    className="maze-transform"
+                    style={{
+                        transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`
+                    }}
+                >
+
+                    <div
+                        className="maze-grid"
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns:
+                                `repeat(${mazeDims?.cols ?? 0}, 32px)`
+                        }}
+                    >
+                        {mazeGridCells}
+                    </div>
+
+                </div>
+
+
+                {selectedTool && cursor.visible && (
+                    <div
+                        className={`build-cursor ${cursor.blocked ? "blocked" : ""}`}
+                        style={{
+                            left: cursor.x,
+                            top: cursor.y
+                        }}
+                    >
+                        {cursor.blocked
+                            ? <FaBan />
+                            : selectedTool.icon
+                        }
+                    </div>
+                )}
+
             </div>
-            <div className="tool-bar">
+
+
+            <div className="build-toolbar">
                 {toolBarCells}
             </div>
-            <button onClick={sendMazeDetails}>Send Details</button>
-            <button onClick={runMaze}>RUN</button>
+
+
+            <div className="build-actions">
+
+                <button onClick={sendMazeDetails}>
+                    SEND DETAILS
+                </button>
+
+                <button onClick={runMaze}>
+                    RUN
+                </button>
+
+            </div>
+
         </div>
     );
-} }
+}

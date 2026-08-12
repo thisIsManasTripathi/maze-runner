@@ -1,0 +1,209 @@
+html,
+body,
+#root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+
+
+/* =========================
+   BUILD PAGE
+   ========================= */
+
+.build-page {
+    /* width: 100vw;
+    height: 100vh; */
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    background: #000;
+    color: #fff;
+
+    position: relative;
+
+    font-family: "Courier New", monospace;
+
+}
+
+
+/* =========================
+   MAZE VIEWPORT
+   ========================= */
+
+.maze-viewport {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    user-select: none;
+
+    background: #000;
+}
+
+
+.maze-viewport.panning {
+    cursor: grabbing;
+}
+
+
+/* =========================
+   MAZE
+   ========================= */
+
+.maze-transform {
+    transform-origin: center center;
+    width: max-content;
+    height: max-content;
+    will-change: transform;
+
+    transition: transform 80ms ease-out;
+}
+
+.maze-grid {
+    width: max-content;
+    height: max-content;
+}
+
+.maze-viewport.tool-selected {
+    cursor: none;
+}
+
+/* =========================
+   CUSTOM TOOL CURSOR
+   ========================= */
+
+.build-cursor {
+    position: absolute;
+
+    width: 32px;
+    height: 32px;
+
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #fff;
+
+    pointer-events: none;
+
+    z-index: 20;
+}
+
+.build-cursor svg {
+    width: 24px;
+    height: 24px;
+}
+
+.build-cursor.blocked {
+    color: #ff0000;
+}
+
+.build-cursor.blocked svg {
+    width: 26px;
+    height: 26px;
+}
+
+
+/* =========================
+   TOOLBAR
+   ========================= */
+
+.build-toolbar {
+    position: fixed;
+
+    left: 50%;
+    bottom: 28px;
+
+    transform: translateX(-50%);
+
+    display: flex;
+    align-items: center;
+
+    padding: 6px;
+
+    background: #000;
+
+    border: 3px solid #fff;
+
+    z-index: 50;
+}
+
+
+/* =========================
+   ACTION BUTTONS
+   ========================= */
+
+.build-actions {
+    position: fixed;
+
+    right: 28px;
+    bottom: 28px;
+
+    display: flex;
+    gap: 8px;
+
+    z-index: 50;
+}
+
+.build-actions button {
+    padding: 12px 20px;
+
+    background: #000;
+    color: #fff;
+
+    border: 3px solid #fff;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: bold;
+
+    letter-spacing: 1px;
+
+    cursor: pointer;
+}
+
+.build-actions button:hover {
+    background: #fff;
+    color: #000;
+}
+
+.build-actions button:active {
+    transform: translate(2px, 2px);
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 700px) {
+
+    .build-toolbar {
+        bottom: 16px;
+    }
+
+    .build-actions {
+        right: 16px;
+        bottom: 90px;
+    }
+
+    .build-actions button {
+        padding: 10px 14px;
+        font-size: 11px;
+    }
+}
