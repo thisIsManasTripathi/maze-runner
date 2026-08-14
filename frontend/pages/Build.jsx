@@ -15,10 +15,12 @@ export default function Build() {
     const [mazeGrid, setMazeGrid] = useState(null);
     const [toolArray, setToolArray] = useState(() => {
         return tools.map((item) => {
-            return { ...item, active: false }
+            if (item.name === "wall") return { ...item, active: true }
+            else return { ...item, active: false }
         })
     });
     const [goalLocation, setGoalLocation] = useState(null);
+    const [startLocation, setStartLocation] = useState(() => [1, 1]);
     const [policy, setPolicy] = useState(null);
     const location = useLocation();
 
@@ -76,33 +78,54 @@ export default function Build() {
 
 
     function fillCell(loc, value) {
+        //If the curr cell ain't path AND curr tool ain't eraser (cause eraser can reset cell values) then invalid oprn
+        if ((mazeGrid[loc[0]][loc[1]] !== getBlockValue("eraser") || (startLocation[0] === loc[0] && startLocation[1] === loc[1]))  && currentSelectedTool().name !== "eraser") return;
+
+
         if (currentSelectedTool().name === "goal") {
 
-            if (mazeGrid[loc[0]][loc[1]] != getBlockValue("wall")) {
+            setMazeGrid(prevMazeGrid => {
+                let newMazeGrid = [...prevMazeGrid];
 
-                setMazeGrid(prevMazeGrid => {
-                    let newMazeGrid = [...prevMazeGrid];
 
-                    newMazeGrid[loc[0]][loc[1]] =
-                        currentSelectedTool().value;
+                newMazeGrid[loc[0]][loc[1]] =
+                    currentSelectedTool().value;
 
-                    if (goalLocation && goalLocation != loc)
-                        newMazeGrid[goalLocation[0]][goalLocation[1]] =
-                            getBlockValue("eraser");
+                if (goalLocation && !(goalLocation[0] === loc[0] && goalLocation[1] === loc[1]))
+                    newMazeGrid[goalLocation[0]][goalLocation[1]] =
+                        getBlockValue("eraser");
 
-                    return newMazeGrid;
-                });
+                return newMazeGrid;
+            });
 
-                setGoalLocation(loc);
-            }
-
+            setGoalLocation(loc);
         }
+        else if (currentSelectedTool().name === "start") {
+
+            setMazeGrid(prevMazeGrid => {
+                let newMazeGrid = [...prevMazeGrid];
+
+
+                newMazeGrid[loc[0]][loc[1]] =
+                    currentSelectedTool().value;
+
+                if (startLocation && !(startLocation[0] === loc[0] && startLocation[1] === loc[1]))
+                    newMazeGrid[startLocation[0]][startLocation[1]] =
+                        getBlockValue("eraser");
+
+                return newMazeGrid;
+            });
+
+            setStartLocation(loc);
+        }
+
         else {
 
             setMazeGrid(prevMazeGrid => {
 
                 let newMazeGrid = [...prevMazeGrid];
 
+                //prevents erasing the outer wall boundary
                 if (
                     (loc[0] === 0 || loc[0] === mazeDims.rows - 1) ||
                     (loc[1] === 0 || loc[1] === mazeDims.cols - 1)
@@ -158,6 +181,7 @@ export default function Build() {
                     mazeDims: mazeDims,
                     rewardMatrix: mazeGrid,
                     policy: policy,
+                    startLoc: startLocation,
                     goalLoc: goalLocation
                 }
             })
@@ -172,7 +196,7 @@ export default function Build() {
      */
 
     function handleWheel(e) {
-        e.preventDefault();
+        // e.preventDefault();
 
         const zoomAmount = e.deltaY > 0 ? -0.03 : 0.03;
 
@@ -238,7 +262,10 @@ export default function Build() {
             x: e.clientX - rect.left,
             y: e.clientY - rect.top,
             visible: true,
-            blocked: e.target.closest(".maze-wall") !== null
+            blocked: (e.target.closest(".maze-wall") !== null
+                || e.target.closest(".wall") !== null
+                || ((currentSelectedTool().name === "wall") // if the tool is wall and cell is the goal state
+                    && e.target.closest(".goal")))
         });
     }
 
@@ -271,6 +298,7 @@ export default function Build() {
                 <Cell
                     key={`r${rowNum}-${colNum}`}
                     loc={[rowNum, colNum]}
+                    isStart={startLocation[0] === rowNum && startLocation[1] === colNum}
                     value={item}
                     handleClick={fillCell}
                 />

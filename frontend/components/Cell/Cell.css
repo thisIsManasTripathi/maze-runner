@@ -24,9 +24,13 @@
     background-image: url('../../assets/tile1.png');
     background-color: #fff;
 }
-.goal {
+.start {
     /* background-color: #fff; */
     border-color:aquamarine;
+}
+.goal {
+    /* background-color: #fff; */
+    border-color:red;
 }
 
 

@@ -1,5 +1,5 @@
 import { FaMountain, FaEraser } from "react-icons/fa";
-import { GiBrickWall, GiGolfFlag } from "react-icons/gi";
+import { GiBrickWall, GiGolfFlag, GiMagicGate } from "react-icons/gi";
 import { GiGrass } from "react-icons/gi";
 
 export const tools = [
@@ -17,6 +17,12 @@ export const tools = [
     {
         name: "eraser",
         icon: <FaEraser />,
+        value: -0.1,
+
+    },
+    {
+        name: "start",
+        icon: <GiMagicGate />,
         value: -0.1,
 
     },

@@ -7,6 +7,7 @@ export default function Cell(props) {
     const tileClass = clsx('cell', {
         'wall':props.value==getBlockValue("wall"),
         'path':props.value==getBlockValue("eraser"),
+        'start':props.isStart,
         'goal':props.value==getBlockValue("goal")
     })
 

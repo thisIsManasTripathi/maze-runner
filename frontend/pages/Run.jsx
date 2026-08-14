@@ -8,10 +8,10 @@ import Fallback from "../components/Fallback/Fallback";
 
 export default function Run() {
     const location = useLocation();
-    const { rewardMatrix, policy, mazeDims, goalLoc } = location.state ?? {};
+    const { rewardMatrix, policy, mazeDims, goalLoc, startLoc } = location.state ?? {};
     const [directionState, setDirectionState] = useState(null);
     const [gameState, setGameState] = useState();
-    const [currentLoc, setCurrentLoc] = useState([1, 1]);
+    const [currentLoc, setCurrentLoc] = useState(startLoc);
     const [isRunning, setIsRunning] = useState(false);
 
     // console.log(directionState)
