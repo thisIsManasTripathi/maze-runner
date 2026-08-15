@@ -96,8 +96,96 @@ class Agent():
 
 class MCAgent(Agent):
 
-    def __init__(self, numStates: int):
-        pass
+    def __init__(self, nrows: int, ncols):
+        super().__init__(nrows, ncols)
+
+
+    def generate_episode(self, state, environment):
+        episode = []
+        
+        while (state != environment.goalLoc and len(episode)<100):
+
+            action = Trainer.rng.choice([0,1,2,3], p=self.policy[state])
+            # print (state, action)
+            nextState = self.move(Agent.actions[action], state)
+            episode.append((*state,action))
+            if (nextState not in environment.nonTerminalStates):
+                episode.append((*nextState,action))
+                # print(f" went out of bound : {nextState}")
+                continue
+
+            state = nextState
+
+        episode.append((*state, 0))
+        # print(f"{episode=}\n\n")
+        return np.array(episode)
+
+
+    def improvePolicy(self, environment: GridWorld, epsilon: float):
+
+
+        for i in range(1,environment.nrows-1):
+            for j in range(1,environment.ncols-1):  
+
+                greedy_action_index = Trainer.random_argmax(self.Q[i,j])
+                # print(f"{greedy_action_index=}")
+                non_greedy_prob = epsilon/4 #cause here the number of actions in any state is 4
+                greedy_prob = 1 - epsilon + non_greedy_prob
+
+                actions_prob = [greedy_prob if i == greedy_action_index else non_greedy_prob for i in range(4)]
+                self.policy[i,j] = actions_prob.copy() 
+
+
+    def train(self, environment: GridWorld, numRounds: int, numEpisodes: int, epsilon: float, gamma: float):
+
+        for i in range(numRounds):
+
+            # agent.Q = np.zeros((environment.nrows, environment.ncols, 4))
+            # agent.N = np.zeros_like(agent.Q)
+
+            for j in range(numEpisodes):
+
+                episode = self.generate_episode(rm.choice(environment.nonTerminalStates), environment)
+                # if (episode[-1][:-1] == environment.goalLoc).all():
+                #     self.goalCount += 1
+                # else:
+                #     self.crashCount += 1
+                # print(f"Episode : \n{episode}\n")
+                rows = episode[:,0]
+                cols = episode[:,1]
+                rews = environment.mapMatrix[rows, cols]  #vector of rewards
+                # print(f"{rews=}")
+                visited = set()
+                for epIdx in range(len(episode)-1):
+                    if tuple(episode[epIdx]) not in visited:
+
+                        visited.add(tuple(episode[epIdx]))
+
+                        discountedReward = np.sum(np.dot((rews[epIdx:]), np.array([gamma**i for i in range(len(rews[epIdx:]))])))
+
+                        self.N[*episode[epIdx]] += 1
+                        self.Q[*episode[epIdx]] = self.Q[*episode[epIdx]] + ((1/self.N[*episode[epIdx]])*(discountedReward - self.Q[*episode[epIdx]])) #for discounted reward
+
+            self.improvePolicy(environment, epsilon)
+
+
+class SARSAAgent(Agent):
+
+    def __init__(self, nrows: int, ncols):
+        super().__init__(nrows, ncols)
+
+    # action = 
+
+    def train(self, environment: GridWorld, numRounds: int, numEpisodes: int, gamma: float):
+
+        for i in range(numRounds):
+            for j in range(numEpisodes):
+
+                while (1 in environment.nonTerminalStates):
+                    continue
+                    
+
+
 
 
 class Trainer():
@@ -117,96 +205,11 @@ class Trainer():
         max_val = np.max(arr)
         all_indices = np.where(arr == max_val)
         return rm.choice(all_indices[0])
-    
-
-    def generate_episode(self, state, agent, environment):
-        episode = []
-        
-        while (state != environment.goalLoc and len(episode)<100):
-
-
-            # print(actions_prob)
-
-            # for i in range(4):
-            #     agent.policy[*state, i] = greedy_prob if i == greedy_action_index else non_greedy_prob
-            # print(state)
-
-            action = Trainer.rng.choice([0,1,2,3], p=agent.policy[state])
-            # print (state, action)
-            nextState = agent.move(Agent.actions[action], state)
-            episode.append((*state,action))
-            if (nextState not in environment.nonTerminalStates):
-                episode.append((*nextState,action))
-                # print(f" went out of bound : {nextState}")
-                continue
-
-            state = nextState
-
-        episode.append((*state, 0))
-        # print(f"{episode=}\n\n")
-        return np.array(episode)
-    
-
-    def improvePolicy(self, agent, environment):
-
-
-        for i in range(1,environment.nrows-1):
-            for j in range(1,environment.ncols-1):  
-
-                greedy_action_index = Trainer.random_argmax(agent.Q[i,j])
-                # print(f"{greedy_action_index=}")
-                non_greedy_prob = self.epsilon/4 #cause here the number of actions in any state is 4
-                greedy_prob = 1 - self.epsilon + non_greedy_prob
-
-                actions_prob = [greedy_prob if i == greedy_action_index else non_greedy_prob for i in range(4)]
-                agent.policy[i,j] = actions_prob.copy() 
 
 
     def train(self, agent, environment: GridWorld):
-        for i in range(self.numRounds):
 
-            agent.Q = np.zeros((environment.nrows, environment.ncols, 4))
-            agent.N = np.zeros_like(agent.Q)
-
-            for i in range(self.numEpisodes):
-                episode = self.generate_episode(rm.choice(environment.nonTerminalStates), agent, environment)
-                # print(episode[-1][:-1])
-                if (episode[-1][:-1] == environment.goalLoc).all():
-                    self.goalCount += 1
-                else:
-                    self.crashCount += 1
-                # print(f"Episode : \n{episode}\n")
-                rows = episode[:,0]
-                cols = episode[:,1]
-                rews = environment.mapMatrix[rows, cols]  #vector of rewards
-                # print(f"{rews=}")
-                visited = set()
-                for epIdx in range(len(episode)-1):
-                    if tuple(episode[epIdx]) not in visited:
-                        # visited.add(episode[epIdx])
-                        visited.add(tuple(episode[epIdx]))
-
-                        # discountedReward = rew*(self.gamma**(len(episode)-epIdx-2))
-                        # G = np.sum(rews[epIdx:]) #undiscountedReturn
-                        # [print(f"{rews[i]}*{self.gamma**i:.2f}", end=" + ") for i in range(len(rews[epIdx:]))]
-                        # print("\n\n")
-                        # print(np.dot((rews[epIdx:]), np.array([self.gamma**i for i in range(len(rews[epIdx:]))])))
-                        discountedReward = np.sum(np.dot((rews[epIdx:]), np.array([self.gamma**i for i in range(len(rews[epIdx:]))])))
-                        # print(f"Reward for state {episode[epIdx]} = {discountedReward}\n\n")
-                        # G = (len(episode)-epIdx-1)*(-0.1) + rew # 'return' of the state, action
-                        agent.N[*episode[epIdx]] += 1
-                        # print("Old Q:", agent.Q[*episode[epIdx]])
-                        # print(agent.Q[*episode[epIdx]])
-                        agent.Q[*episode[epIdx]] = agent.Q[*episode[epIdx]] + ((1/agent.N[*episode[epIdx]])*(discountedReward - agent.Q[*episode[epIdx]])) #for discounted reward
-                        # agent.Q[episode[epIdx]] = agent.Q[episode[epIdx]] + ((1/agent.N[episode[epIdx]])*(G - agent.Q[episode[epIdx]])) #for negative step reward
-
-                        # print("State:", episode[epIdx][:2])
-                        # print("Action:", episode[epIdx][2])
-                        # print("Return:", discountedReward)
-                        # print("New Q:", agent.Q[*episode[epIdx]])
-                                            
-            self.improvePolicy(agent, environment)
-            # print(agent.getSimplePolicy(True))
+        agent.train(environment, self.numRounds, self.numEpisodes, self.epsilon, self.gamma)
 
         return agent.policy
 
