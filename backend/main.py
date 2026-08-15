@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import numpy as np
 
-from rl import GridWorld, MCAgent, Trainer
+from rl import GridWorld, MCAgent, SARSAAgent, Trainer
 
 app = FastAPI()
 
@@ -25,8 +25,9 @@ class MazeConfig(BaseModel):
 def solveMaze(mazeGridInput: list, goalLoc: tuple):
     grid = GridWorld(gridInp=mazeGridInput, goalLoc=goalLoc)
     grid.setNonTerminalStates()
-    agent = MCAgent(grid.nrows, grid.ncols)
-    trainer = Trainer()
+    # agent = MCAgent(grid.nrows, grid.ncols)
+    agent = SARSAAgent(grid.nrows, grid.ncols)
+    trainer = Trainer(numEpisodes=100000, numRounds=1)
     trainer.train(agent=agent, environment=grid)
     print(agent.getPolicy('simple'))
     print(f"{trainer.crashCount=}")

@@ -29,7 +29,7 @@ export const tools = [
     {
         name: "goal",
         icon: <GiGolfFlag />,
-        value: 100,
+        value: 10,
 
     },
 ];

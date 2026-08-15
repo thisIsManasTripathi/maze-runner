@@ -178,13 +178,14 @@ class SARSAAgent(Agent):
     # action = 
 
     def train(self, environment: GridWorld, numRounds: int, numEpisodes: int, gamma: float, epsilon: float):
+        # epsilon = 0.
 
         for i in range(numRounds):
             for j in range(numEpisodes):
                 state = rm.choice(environment.nonTerminalStates)
                 while (state in environment.nonTerminalStates):
 
-                    action = Trainer.random_argmax(self.Q[*state])
+                    action = Trainer.random_argmax(self.Q[*state]) #if rm.random()>epsilon else rm.randint(0,3)
 
                     nextState = self.move(self.actions[action], state)
                     R = environment.mapMatrix[*nextState]
@@ -192,8 +193,9 @@ class SARSAAgent(Agent):
                     # print(f"State: {state}\nAction: {action}\nNext State: {nextState}\nReward: {R}")
                     nextAction = Trainer.random_argmax(self.Q[*nextState])
 
-                    self.N[*state, action] += 1
-                    self.Q[*state, action] += ((1/self.N[*state, action])*(R + gamma*self.Q[*nextState, nextAction] - self.Q[*state, action]))
+                    # self.N[*state, action] += 1
+                    # self.Q[*state, action] += ((1/self.N[*state, action])*(R + gamma*self.Q[*nextState, nextAction] - self.Q[*state, action]))
+                    self.Q[*state, action] += ((0.1)*(R + gamma*self.Q[*nextState, nextAction] - self.Q[*state, action]))
 
                     state = nextState
 
@@ -243,14 +245,15 @@ def test():
     # #              [-10, -10, pathVal, pathVal, pathVal, -10, -10, -10], 
     # #              [-10, pathVal, -10, -10, pathVal, pathVal, 100, -10], 
     # #              [-10, -10, -10, -10, -10, -10, -10, -10]]
-    arr = [[-10,   -10,   -10,   -10,   -10,   -10,     -10,    -10,  ],
-    [-10,    pathVal, -10,       pathVal, -10,         -10,     -10,   -10  ],
-    [-10,    pathVal,  pathVal,  pathVal, -10,          10,    pathVal, -10  ],
-    [-10,    pathVal, -10,       pathVal, -10,         -10,    pathVal, -10  ],
-    [-10,    pathVal, -10,       pathVal, -10,       pathVal,  pathVal, -10  ],
-    [-10,    pathVal, -10,       pathVal,  pathVal,  pathVal, -10,   -10  ],
-    [-10,    pathVal, -10,       pathVal, -10,   -10,   -10,   -10  ],
-    [-10,   -10,   -10,   -10,   -10,   -10,   -10,   -10  ]]
+    # arr = [[-10,   -10,   -10,   -10,   -10,   -10,     -10,    -10,  ],
+    # [-10,    pathVal, -10,       pathVal, -10,         -10,     -10,   -10  ],
+    # [-10,    pathVal,  pathVal,  pathVal, -10,          10,    pathVal, -10  ],
+    # [-10,    pathVal, -10,       pathVal, -10,         -10,    pathVal, -10  ],
+    # [-10,    pathVal, -10,       pathVal, -10,       pathVal,  pathVal, -10  ],
+    # [-10,    pathVal, -10,       pathVal,  pathVal,  pathVal, -10,   -10  ],
+    # [-10,    pathVal, -10,       pathVal, -10,   -10,   -10,   -10  ],
+    # [-10,   -10,   -10,   -10,   -10,   -10,   -10,   -10  ]]
+    arr = [[-10, -10, -10, -10, -10, -10, -10], [-10, -0.1, -0.1, -0.1, -0.1, -0.1, -10], [-10, -0.1, -0.1, -0.1, -0.1, -0.1, -10], [-10, -0.1, -10, -10, -0.1, -0.1, -10], [-10, -0.1, -0.1, -10, -0.1, -0.1, -10], [-10, -0.1, -0.1, -0.1, -0.1, 10, -10], [-10, -10, -10, -10, -10, -10, -10]]
     # arr = [[-10, -10, -10, -10, -10, -10, -10, -10],
     #         [-10, -0.1, -10, -0.1, -10, 100, -0.1, -10],
     #         [-10, -0.1, -0.1, -0.1, -10, -10, -0.1, -10],
@@ -292,6 +295,6 @@ def test():
     print(np.min(agentVinod.Q))
     print(np.mean(agentVinod.Q))
 
-test()
+# test()
 
 
