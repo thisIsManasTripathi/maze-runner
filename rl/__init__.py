@@ -1,1 +1,1 @@
-from .core import GridWorld, Agent, MCAgent, Trainer 
+from .core import GridWorld, Agent, MCAgent, SARSAAgent, Trainer 

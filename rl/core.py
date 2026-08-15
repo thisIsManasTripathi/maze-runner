@@ -5,6 +5,7 @@ import random as rm
 class GridWorld:
 
     penalty = -10
+    goal = 10
 
     def __init__(self, gridInp: list, goalLoc: tuple):
         self.nrows = len(gridInp)
@@ -26,7 +27,7 @@ class GridWorld:
         self.nonTerminalStates = []
         for i in range(self.nrows):
             for j in range(self.ncols):
-                self.nonTerminalStates.append((i,j)) if (self.mapMatrix[i,j] != self.penalty) else 0
+                self.nonTerminalStates.append((i,j)) if (self.mapMatrix[i,j] != self.penalty and self.mapMatrix[i,j] != self.goal) else 0
 
       
 
@@ -68,14 +69,14 @@ class Agent():
                 for i in range(1, self.rowStates-1):
                     for j in range(1, self.colStates-1):
                         # print(f"{(i,j)=}")
-                        policyH[i,j] = self.actionsSymbolic[np.argmax(self.policy[i,j])]
+                        policyH[i,j] = self.actionsSymbolic[np.argmax(self.Q[i,j])]
 
                 return policyH
             case 'serio':
                 policyA = np.zeros(shape=(self.rowStates, self.colStates, 2), dtype='h') #policyA(ctionable)
                 for i in range(1, self.rowStates-1):
                     for j in range(1, self.colStates-1):
-                        action = np.argmax(self.policy[i,j])
+                        action = np.argmax(self.Q[i,j])
                         match (action):
                             case 0:
                                 value = [-1,0]
@@ -176,13 +177,31 @@ class SARSAAgent(Agent):
 
     # action = 
 
-    def train(self, environment: GridWorld, numRounds: int, numEpisodes: int, gamma: float):
+    def train(self, environment: GridWorld, numRounds: int, numEpisodes: int, gamma: float, epsilon: float):
 
         for i in range(numRounds):
             for j in range(numEpisodes):
+                state = rm.choice(environment.nonTerminalStates)
+                while (state in environment.nonTerminalStates):
 
-                while (1 in environment.nonTerminalStates):
-                    continue
+                    action = Trainer.random_argmax(self.Q[*state])
+
+                    nextState = self.move(self.actions[action], state)
+                    R = environment.mapMatrix[*nextState]
+
+                    # print(f"State: {state}\nAction: {action}\nNext State: {nextState}\nReward: {R}")
+                    nextAction = Trainer.random_argmax(self.Q[*nextState])
+
+                    self.N[*state, action] += 1
+                    self.Q[*state, action] += ((1/self.N[*state, action])*(R + gamma*self.Q[*nextState, nextAction] - self.Q[*state, action]))
+
+                    state = nextState
+
+                # print("\n----------------\n")
+
+                # print(self.Q[1,1])
+                    
+                    
                     
 
 
@@ -209,7 +228,7 @@ class Trainer():
 
     def train(self, agent, environment: GridWorld):
 
-        agent.train(environment, self.numRounds, self.numEpisodes, self.epsilon, self.gamma)
+        agent.train(environment, self.numRounds, self.numEpisodes, self.gamma, self.epsilon)
 
         return agent.policy
 
@@ -224,13 +243,13 @@ def test():
     # #              [-10, -10, pathVal, pathVal, pathVal, -10, -10, -10], 
     # #              [-10, pathVal, -10, -10, pathVal, pathVal, 100, -10], 
     # #              [-10, -10, -10, -10, -10, -10, -10, -10]]
-    arr = [[-10,   -10,   -10,   -10,   -10,   -10,   -10,   -10,  ],
-    [-10,    pathVal, -10,    pathVal, -10,   -10,   -10,   -10  ],
-    [-10,    pathVal,  pathVal,  pathVal, -10,    10,  pathVal, -10  ],
-    [-10,    pathVal, -10,    pathVal, -10,   -10,    pathVal, -10  ],
-    [-10,    pathVal, -10,    pathVal, -10,    pathVal,  pathVal, -10  ],
-    [-10,    pathVal, -10,    pathVal,  pathVal,  pathVal, -10,   -10  ],
-    [-10,    pathVal, -10,    pathVal, -10,   -10,   -10,   -10  ],
+    arr = [[-10,   -10,   -10,   -10,   -10,   -10,     -10,    -10,  ],
+    [-10,    pathVal, -10,       pathVal, -10,         -10,     -10,   -10  ],
+    [-10,    pathVal,  pathVal,  pathVal, -10,          10,    pathVal, -10  ],
+    [-10,    pathVal, -10,       pathVal, -10,         -10,    pathVal, -10  ],
+    [-10,    pathVal, -10,       pathVal, -10,       pathVal,  pathVal, -10  ],
+    [-10,    pathVal, -10,       pathVal,  pathVal,  pathVal, -10,   -10  ],
+    [-10,    pathVal, -10,       pathVal, -10,   -10,   -10,   -10  ],
     [-10,   -10,   -10,   -10,   -10,   -10,   -10,   -10  ]]
     # arr = [[-10, -10, -10, -10, -10, -10, -10, -10],
     #         [-10, -0.1, -10, -0.1, -10, 100, -0.1, -10],
@@ -251,24 +270,28 @@ def test():
     # #              [-100, 0, -100, -100, 0, 0, 10, -100], 
     # #              [-100, -100, -100, -100, -100, -100, -100, -100]]'''
     # # print("ran from file")
-    grid = GridWorld(arr, (1,5))
+    grid = GridWorld(arr, (2,5))
 
 
     grid.setNonTerminalStates()
     print(grid.nonTerminalStates)
-    agentVinod = Agent(grid.nrows, grid.ncols)
+    # agentVinod = Agent(grid.nrows, grid.ncols)
+    agentVinod = SARSAAgent(grid.nrows, grid.ncols)
+    print(agentVinod.getPolicy('simple'))
     # print(agentVinod.policy)
-    trainer = Trainer(numRounds=10,numEpisodes=200)
+    trainer = Trainer(numRounds=5,numEpisodes=200)
     # trainer = Trainer()
     trainer.train(agentVinod, grid)
     # print(agentVinod.policy)
     print(agentVinod.getPolicy('simple'))
-    print(agentVinod.getPolicy('serio'))
+    # print(agentVinod.getPolicy('serio'))
 
     print(f"{trainer.crashCount=}")
     print(f"{trainer.goalCount=}")
     print(np.max(agentVinod.Q))
     print(np.min(agentVinod.Q))
     print(np.mean(agentVinod.Q))
+
+test()
 
 
