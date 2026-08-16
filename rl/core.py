@@ -129,7 +129,6 @@ class MCAgent(Agent):
             for j in range(1,environment.ncols-1):  
 
                 greedy_action_index = Trainer.random_argmax(self.Q[i,j])
-                # print(f"{greedy_action_index=}")
                 non_greedy_prob = epsilon/4 #cause here the number of actions in any state is 4
                 greedy_prob = 1 - epsilon + non_greedy_prob
 
@@ -140,9 +139,6 @@ class MCAgent(Agent):
     def train(self, environment: GridWorld, numRounds: int, numEpisodes: int, epsilon: float, gamma: float):
 
         for i in range(numRounds):
-
-            # agent.Q = np.zeros((environment.nrows, environment.ncols, 4))
-            # agent.N = np.zeros_like(agent.Q)
 
             for j in range(numEpisodes):
 
@@ -170,12 +166,12 @@ class MCAgent(Agent):
             self.improvePolicy(environment, epsilon)
 
 
+
 class SARSAAgent(Agent):
 
     def __init__(self, nrows: int, ncols):
         super().__init__(nrows, ncols)
 
-    # action = 
 
     def train(self, environment: GridWorld, numRounds: int, numEpisodes: int, gamma: float, epsilon: float):
         # epsilon = 0.
@@ -193,21 +189,14 @@ class SARSAAgent(Agent):
                     # print(f"State: {state}\nAction: {action}\nNext State: {nextState}\nReward: {R}")
                     nextAction = Trainer.random_argmax(self.Q[*nextState])
 
-                    # self.N[*state, action] += 1
-                    # self.Q[*state, action] += ((1/self.N[*state, action])*(R + gamma*self.Q[*nextState, nextAction] - self.Q[*state, action]))
                     self.Q[*state, action] += ((0.1)*(R + gamma*self.Q[*nextState, nextAction] - self.Q[*state, action]))
 
                     state = nextState
 
                 # print("\n----------------\n")
 
-                # print(self.Q[1,1])
                     
                     
-                    
-
-
-
 
 class Trainer():
 
@@ -254,40 +243,18 @@ def test():
     # [-10,    pathVal, -10,       pathVal, -10,   -10,   -10,   -10  ],
     # [-10,   -10,   -10,   -10,   -10,   -10,   -10,   -10  ]]
     arr = [[-10, -10, -10, -10, -10, -10, -10], [-10, -0.1, -0.1, -0.1, -0.1, -0.1, -10], [-10, -0.1, -0.1, -0.1, -0.1, -0.1, -10], [-10, -0.1, -10, -10, -0.1, -0.1, -10], [-10, -0.1, -0.1, -10, -0.1, -0.1, -10], [-10, -0.1, -0.1, -0.1, -0.1, 10, -10], [-10, -10, -10, -10, -10, -10, -10]]
-    # arr = [[-10, -10, -10, -10, -10, -10, -10, -10],
-    #         [-10, -0.1, -10, -0.1, -10, 100, -0.1, -10],
-    #         [-10, -0.1, -0.1, -0.1, -10, -10, -0.1, -10],
-    #         [-10, -0.1, -10, -0.1, -10, -0.1, -0.1, -10],
-    #         [-10, -0.1, -10, -0.1, -0.1, -0.1, -10, -10],
-    #         [-10, -0.1, -10, -0.1, -10, -0.1, -0.1, -10],
-    #         [-10, -0.1, -10, -0.1, -10, -10, -0.1, -10],
-    #         [-10, -10, -10, -10, -10, -10, -10, -10]]
 
-    # # '''[[-100, -100, -100, -100, -100, -100, -100, -100], 
-
-    # #              [-100, 0, 0, 0, 0, 0, 0, -100], 
-    # #              [-100, 0, -100, 0, -100, -100, 0, -100], 
-    # #              [-100, 0, -100, 0, 0, -100, 0, -100], 
-    # #              [-100, 0, 0, -100, -100, 0, 0, -100], 
-    # #              [-100, -100, 0, 0, 0, -100, -100, -100], 
-    # #              [-100, 0, -100, -100, 0, 0, 10, -100], 
-    # #              [-100, -100, -100, -100, -100, -100, -100, -100]]'''
-    # # print("ran from file")
     grid = GridWorld(arr, (2,5))
 
 
     grid.setNonTerminalStates()
     print(grid.nonTerminalStates)
-    # agentVinod = Agent(grid.nrows, grid.ncols)
     agentVinod = SARSAAgent(grid.nrows, grid.ncols)
     print(agentVinod.getPolicy('simple'))
-    # print(agentVinod.policy)
     trainer = Trainer(numRounds=5,numEpisodes=200)
     # trainer = Trainer()
     trainer.train(agentVinod, grid)
-    # print(agentVinod.policy)
     print(agentVinod.getPolicy('simple'))
-    # print(agentVinod.getPolicy('serio'))
 
     print(f"{trainer.crashCount=}")
     print(f"{trainer.goalCount=}")

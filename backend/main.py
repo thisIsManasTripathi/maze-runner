@@ -27,7 +27,7 @@ def solveMaze(mazeGridInput: list, goalLoc: tuple):
     grid.setNonTerminalStates()
     # agent = MCAgent(grid.nrows, grid.ncols)
     agent = SARSAAgent(grid.nrows, grid.ncols)
-    trainer = Trainer(numEpisodes=100000, numRounds=1)
+    trainer = Trainer(numEpisodes=1000, numRounds=1)
     trainer.train(agent=agent, environment=grid)
     print(agent.getPolicy('simple'))
     print(f"{trainer.crashCount=}")
