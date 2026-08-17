@@ -4,6 +4,7 @@ import RunCell from "../components/RunCell/RunCell";
 import { directions, getBlockValue, getDirectionFromOffset, moveStepDuration } from "../tools";
 import { gameStates } from "../tools";
 import "./css/Run.css";
+import Knight from "../components/Knight/Knight";
 import Fallback from "../components/Fallback/Fallback";
 
 export default function Run() {
@@ -16,8 +17,6 @@ export default function Run() {
 
     const maxStepsAllowed = (mazeDims.rows-2)*(mazeDims.cols-2);
     // console.log(directionState)
-
-    // Check if goal is reached
 
     // GAME LOOP : 
     useEffect(() => {
@@ -80,11 +79,16 @@ export default function Run() {
                             <RunCell
                                 key={`r${r}-c${c}`}
                                 value={cellValue}
-                                active={isActive}
+                                // active={isActive}
                             />
                         );
                     })
                 )}
+                <Knight 
+                    state={gameState}
+                    direction={directionState}
+                    position={currentLoc}
+                />
             </div>
 
             <div className="run-controls">

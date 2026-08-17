@@ -1,0 +1,55 @@
+.knight {
+    z-index: 10;
+    width: 32px;
+    height: 32px;
+
+    position: absolute;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #fff;
+    color: #000;
+
+    border: 2px solid #fff;
+
+    font-size: 10px;
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+
+    user-select: none;
+    pointer-events: none;
+    transition: transform 400ms ease;
+}
+
+
+
+
+/* =========================
+   STATES
+   ========================= */
+
+.knight.idle {
+    background: rgb(255, 191, 0);
+    color: #000;
+}
+
+.knight.running {
+    background: greenyellow;
+    color: #000;
+}
+
+.knight.dead {
+    background: #444;
+    color: #fff;
+}
+
+.knight.victory {
+    background: green;
+    color: #000;
+
+    border: 3px solid #fff;
+}
