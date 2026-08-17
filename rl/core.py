@@ -178,8 +178,9 @@ class SARSAAgent(Agent):
 
         for i in range(numRounds):
             for j in range(numEpisodes):
+                moveCount = 0
                 state = rm.choice(environment.nonTerminalStates)
-                while (state in environment.nonTerminalStates):
+                while (state in environment.nonTerminalStates and moveCount<4*len(environment.nonTerminalStates)):
 
                     action = Trainer.random_argmax(self.Q[*state]) #if rm.random()>epsilon else rm.randint(0,3)
 
@@ -192,6 +193,7 @@ class SARSAAgent(Agent):
                     self.Q[*state, action] += ((0.1)*(R + gamma*self.Q[*nextState, nextAction] - self.Q[*state, action]))
 
                     state = nextState
+                    moveCount += 1
 
                 # print("\n----------------\n")
 

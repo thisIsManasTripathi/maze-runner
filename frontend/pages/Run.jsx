@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router";
 import RunCell from "../components/RunCell/RunCell";
-import { directions, getDirectionFromOffset, moveStepDuration } from "../tools";
+import { directions, getBlockValue, getDirectionFromOffset, moveStepDuration } from "../tools";
 import { gameStates } from "../tools";
 import "./css/Run.css";
 import Fallback from "../components/Fallback/Fallback";
@@ -9,21 +9,30 @@ import Fallback from "../components/Fallback/Fallback";
 export default function Run() {
     const location = useLocation();
     const { rewardMatrix, policy, mazeDims, goalLoc, startLoc } = location.state ?? {};
-    const [directionState, setDirectionState] = useState(null);
-    const [gameState, setGameState] = useState();
     const [currentLoc, setCurrentLoc] = useState(startLoc);
-    const [isRunning, setIsRunning] = useState(false);
+    const [directionState, setDirectionState] = useState(() => getDirectionFromOffset(currentLoc));
+    const [gameState, setGameState] = useState(gameStates[0]); // IDLE in the beginning
+    const [steps, setSteps] = useState(0);
 
+    const maxStepsAllowed = (mazeDims.rows-2)*(mazeDims.cols-2);
     // console.log(directionState)
 
     // Check if goal is reached
-    const isAtGoal = currentLoc && goalLoc && 
-        currentLoc[0] === goalLoc[0] && 
-        currentLoc[1] === goalLoc[1];
 
-    // Driven by useEffect: automatically advances state when isRunning is true
+    // GAME LOOP : 
     useEffect(() => {
-        if (!isRunning || isAtGoal) return;
+
+        //checking if won
+        if (currentLoc && goalLoc &&
+            currentLoc[0] === goalLoc[0] &&
+            currentLoc[1] === goalLoc[1]) setGameState("VICTORY");
+
+        //collision-detection
+        if (rewardMatrix[currentLoc[0]][currentLoc[1]] === getBlockValue("wall") || steps > maxStepsAllowed) setGameState("DEAD");
+
+        //checking if dead
+        if (gameState === "DEAD" || gameState === "IDLE" || gameState == "VICTORY") return;
+
 
         const timer = setTimeout(() => {
             setCurrentLoc(([r, c]) => {
@@ -31,13 +40,19 @@ export default function Run() {
                 // console.log(currentLoc)
                 setDirectionState(getDirectionFromOffset(moveOffset));
                 // console.log([r + moveOffset[0], c + moveOffset[1]])
-
-                return [r + moveOffset[0], c + moveOffset[1]];
+                const nextR = r + moveOffset[0];
+                const nextC = c + moveOffset[1];
+                setSteps(steps+1);
+                return [nextR, nextC];
             });
+
+            if (currentLoc && goalLoc &&
+                currentLoc[0] === goalLoc[0] &&
+                currentLoc[1] === goalLoc[1]) setGameState("VICTORY");
         }, moveStepDuration); // adjust animation speed (ms)
 
         return () => clearTimeout(timer); // automatically handles cleanup on state change or unmount
-    }, [isRunning, currentLoc, isAtGoal, policy]);
+    }, [gameState, currentLoc]);
 
     if (!rewardMatrix || !policy) {
         return (
@@ -49,7 +64,6 @@ export default function Run() {
         <div className="run-page">
             <h1 className="run-title">MAZE RUNNER</h1>
 
-            {/* Render 2D Grid with nested map (No .flat() or math division needed!) */}
             <div
                 className="run-grid"
                 style={{
@@ -74,17 +88,20 @@ export default function Run() {
             </div>
 
             <div className="run-controls">
-                <button 
-                    onClick={() => setIsRunning(true)} 
-                    disabled={isRunning || isAtGoal}
+                <button
+                    onClick={() => setGameState("RUNNING")}
+                    disabled={gameState === "DEAD" || gameState === "VICTORY"}
                 >
-                    {isAtGoal ? "GOAL REACHED!" : isRunning ? "RUNNING..." : "START"}
+                    {gameState === "VICTORY" ? "GOAL REACHED!" :
+                        gameState === "DEAD" ? "WASTED" :
+                            gameState == "RUNNING" ? "RUNNING..." : "START"}
                 </button>
 
-                <button 
+                <button
                     onClick={() => {
-                        setIsRunning(false);
-                        setCurrentLoc([1, 1]);
+                        setCurrentLoc(startLoc);
+                        setSteps(0)
+                        setGameState("IDLE");
                     }}
                 >
                     RESET

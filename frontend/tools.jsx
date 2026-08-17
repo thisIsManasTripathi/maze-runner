@@ -44,7 +44,7 @@ export function getBlockValue(blockName) {
 }
 
 export const directions = ["UP", "DOWN", "LEFT", "RIGHT"];
-export const gameStates = ["RUNNING", "VICTORY", "COLLISION"];
+export const gameStates = ["IDLE", "RUNNING", "DEAD", "VICTORY"];
 export const moveStepDuration = 400;
 
 export function getDirectionFromOffset([roff, coff]){
