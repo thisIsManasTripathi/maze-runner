@@ -9,12 +9,6 @@ export const tools = [
         value: -10,
     },
     {
-        name: "mud",
-        icon: <GiGrass />,
-        value: -0.25,
-
-    },
-    {
         name: "eraser",
         icon: <FaEraser />,
         value: -0.1,

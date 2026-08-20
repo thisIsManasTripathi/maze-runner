@@ -262,10 +262,12 @@ export default function Build() {
             x: e.clientX - rect.left,
             y: e.clientY - rect.top,
             visible: true,
-            blocked: (e.target.closest(".maze-wall") !== null
-                || e.target.closest(".wall") !== null
-                || ((currentSelectedTool().name === "wall") // if the tool is wall and cell is the goal state
-                    && e.target.closest(".goal")))
+            blocked: (e.target.closest(".maze-wall") !== null )
+                || (currentSelectedTool().name !== "eraser" && e.target.closest(".path") === null)
+            // blocked: (e.target.closest(".maze-wall") !== null
+            //     || e.target.closest(".wall") !== null
+            //     || ((currentSelectedTool().name === "wall") // if the tool is wall and cell is the goal state
+            //         && e.target.closest(".goal")))
         });
     }
 

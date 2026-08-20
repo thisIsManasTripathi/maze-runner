@@ -21,9 +21,16 @@
 }
 
 .wall {
-    background-image: url('../../assets/tile1.png');
-    background-color: #fff;
+    background-image: url('../../assets/wall.png');
+    outline:none;
+    border:none;
 }
+.path{
+    background-image: url('../../assets/floor.png');
+    outline:none;
+    border:none;
+}
+
 .start {
     /* background-color: #fff; */
     border-color:aquamarine;
