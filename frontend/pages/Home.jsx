@@ -33,7 +33,7 @@ export default function Home() {
         </div>
 
         <div className="home-nav-icons">
-          <button><FaGithub /></button>
+          <a href="https://github.com/thisIsManasTripathi/maze-runner" target="_blank"><FaGithub /></a>
         </div>
 
       </nav>

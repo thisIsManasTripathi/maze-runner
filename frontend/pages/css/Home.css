@@ -1,7 +1,5 @@
-/* @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap");
- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=VT323&display=swap');
-
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=VT323&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Pixelify+Sans:wght@400..700&family=VT323&display=swap');
 
 /* =====================================================
    HOME
@@ -168,7 +166,8 @@
 .hero-title {
   margin: 0;
 
-  font-family: "Press Start 2P", monospace;
+  font-family: "Pixelify Sans", monospace;
+  /* font-family: "Press Start 2P", monospace; */
 
   font-size: clamp(2rem, 4.5vw, 4.1rem);
 
@@ -181,6 +180,8 @@
 
   text-shadow:
     3px 3px 0 #27292d;
+
+  font-weight: 700;
 
   animation: titleAppear 0.8s ease-out both;
 }
