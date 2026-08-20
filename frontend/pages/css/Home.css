@@ -34,13 +34,11 @@
 
   z-index: 50;
 
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(255, 255, 255, 0.015) 0px,
-    rgba(255, 255, 255, 0.015) 1px,
-    transparent 1px,
-    transparent 4px
-  );
+  background: repeating-linear-gradient(0deg,
+      rgba(255, 255, 255, 0.015) 0px,
+      rgba(255, 255, 255, 0.015) 1px,
+      transparent 1px,
+      transparent 4px);
 }
 
 
@@ -78,7 +76,9 @@
 
   font-family: "Press Start 2P", monospace;
 
-  font-size: 16px;
+  font-size: 22px;
+
+  font-weight: 600;
 
   letter-spacing: 1px;
 }
@@ -174,7 +174,8 @@
 
   line-height: 1.2;
 
-  letter-spacing: 2px;
+  letter-spacing: 0.5px;
+  word-spacing: 0.5px;
 
   color: #eeeeee;
 
@@ -250,7 +251,7 @@
 
   min-width: 210px;
   max-width: fit-content;
-  
+
   align-self: center;
 
   padding: 0 22px;
@@ -276,20 +277,18 @@
 
   box-shadow: 5px 5px 0 #292b30;
 
-  clip-path: polygon(
-    4px 0,
-    calc(100% - 4px) 0,
-    calc(100% - 4px) 3px,
-    100% 3px,
-    100% calc(100% - 3px),
-    calc(100% - 4px) calc(100% - 3px),
-    calc(100% - 4px) 100%,
-    4px 100%,
-    4px calc(100% - 3px),
-    0 calc(100% - 3px),
-    0 3px,
-    4px 3px
-  );
+  clip-path: polygon(4px 0,
+      calc(100% - 4px) 0,
+      calc(100% - 4px) 3px,
+      100% 3px,
+      100% calc(100% - 3px),
+      calc(100% - 4px) calc(100% - 3px),
+      calc(100% - 4px) 100%,
+      4px 100%,
+      4px calc(100% - 3px),
+      0 calc(100% - 3px),
+      0 3px,
+      4px 3px);
 
   transition:
     transform 0.15s ease,
@@ -314,35 +313,66 @@
 ===================================================== */
 
 .hero-art {
-  width: 63%;
+    position: absolute;
 
-  position: absolute;
+    inset: 0;
 
-  right: -5%;
-  top: 50%;
+    width: 100%;
+    height: 100%;
 
-  transform: translateY(-50%);
+    z-index: 1;
 
-  z-index: 2;
+    pointer-events: none;
 
-  animation: artAppear 1s ease-out both;
+    overflow: hidden;
 }
 
 .hero-art img {
-  display: block;
+    width: 100%;
+    height: 100%;
 
-  width: 100%;
-  height: auto;
+    /* margin-right: 50vw; */
 
-  image-rendering: pixelated;
+    display: block;
 
-  filter:
-    brightness(0.92)
-    contrast(1.08);
+    object-fit: cover;
+    /* object-position: center; */
 
-  animation: artFloat 5s ease-in-out infinite;
+    --image-x: 200px;
+    transform: translateX(var(--image-x));
+
+    image-rendering: pixelated;
+
+    filter:
+        brightness(0.8)
+        contrast(1.08);
+
+    animation: artFloat 5s ease-in-out infinite;
 }
+.hero-art::after {
+    content: "";
 
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            to right,
+            #07080b 0%,
+            #07080b 15%,
+            rgba(7, 8, 11, 0.97) 25%,
+            rgba(7, 8, 11, 0.75) 35%,
+            rgba(7, 8, 11, 0.3) 48%,
+            transparent 65%
+        ),
+        linear-gradient(
+            to bottom,
+            #07080b 0%,
+            transparent 15%,
+            transparent 85%,
+            #07080b 100%
+        );
+}
 
 /* =====================================================
    FLOATING PIXELS
@@ -459,30 +489,28 @@
 
   animation: cardAppear 0.25s ease-out;
 
-  clip-path: polygon(
-    7px 0,
-    calc(100% - 7px) 0,
-    calc(100% - 7px) 3px,
-    calc(100% - 3px) 3px,
-    calc(100% - 3px) 7px,
-    100% 7px,
+  clip-path: polygon(7px 0,
+      calc(100% - 7px) 0,
+      calc(100% - 7px) 3px,
+      calc(100% - 3px) 3px,
+      calc(100% - 3px) 7px,
+      100% 7px,
 
-    100% calc(100% - 7px),
-    calc(100% - 3px) calc(100% - 7px),
-    calc(100% - 3px) calc(100% - 3px),
-    calc(100% - 7px) calc(100% - 3px),
+      100% calc(100% - 7px),
+      calc(100% - 3px) calc(100% - 7px),
+      calc(100% - 3px) calc(100% - 3px),
+      calc(100% - 7px) calc(100% - 3px),
 
-    7px calc(100% - 3px),
-    7px calc(100% - 7px),
-    3px calc(100% - 7px),
-    3px 100%,
+      7px calc(100% - 3px),
+      7px calc(100% - 7px),
+      3px calc(100% - 7px),
+      3px 100%,
 
-    0 100%,
-    0 7px,
-    3px 7px,
-    3px 3px,
-    7px 3px
-  );
+      0 100%,
+      0 7px,
+      3px 7px,
+      3px 3px,
+      7px 3px);
 }
 
 
@@ -781,18 +809,22 @@
 
 
 @keyframes artFloat {
+
   0%,
   100% {
-    transform: translateY(0);
+    /* transform: translateY(0); */
+    transform: translate(var(--image-x), 0);
   }
 
   50% {
-    transform: translateY(-7px);
+    /* transform: translateY(-7px); */
+    transform: translate(var(--image-x), -7px);
   }
 }
 
 
 @keyframes knightIdle {
+
   0%,
   100% {
     transform: translateY(0);
@@ -805,6 +837,7 @@
 
 
 @keyframes pixelBlink {
+
   0%,
   100% {
     opacity: 0.15;
@@ -817,6 +850,7 @@
 
 
 @keyframes scrollBounce {
+
   0%,
   100% {
     transform: translateY(0);
@@ -848,16 +882,14 @@
     opacity: 0;
 
     transform:
-      translateY(15px)
-      scale(0.96);
+      translateY(15px) scale(0.96);
   }
 
   to {
     opacity: 1;
 
     transform:
-      translateY(0)
-      scale(1);
+      translateY(0) scale(1);
   }
 }
 

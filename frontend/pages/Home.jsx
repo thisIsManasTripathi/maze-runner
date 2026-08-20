@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import "./css/Home.css";
+import { FaGithub } from "react-icons/fa";
 
 export default function Home() {
 
@@ -27,14 +28,12 @@ export default function Home() {
 
         <div className="home-logo">
           {/* <span className="logo-knight">♞</span> */}
-          <img src="../assets/knight-helm-logo.png" width={60} height={45} />
+          <img src="../assets/knight-helm-logo.png" width={50} height={37} className="logo-knight"/>
           <span>MAZE RUNNER</span>
         </div>
 
         <div className="home-nav-icons">
-          <button>♜</button>
-          <button>▥</button>
-          <button>⚙</button>
+          <button><FaGithub /></button>
         </div>
 
       </nav>
@@ -47,11 +46,11 @@ export default function Home() {
         <div className="hero-content">
 
           <h1 className="hero-title">
-            SOLVE.
+            {/* SOLVE.
+            <br /> */}
+            You Build.
             <br />
-            STRATEGIZE.
-            <br />
-            <span>CONQUER.</span>
+            <span>I solve.</span>
           </h1>
 
           <div className="hero-divider">
@@ -98,19 +97,6 @@ export default function Home() {
       <div className="pixel pixel-one"></div>
       <div className="pixel pixel-two"></div>
       <div className="pixel pixel-three"></div>
-
-
-      {/* ================= SCROLL ================= */}
-
-      <div className="scroll-indicator">
-
-        <span>SCROLL DOWN</span>
-
-        <div className="scroll-arrow">
-          ⌄
-        </div>
-
-      </div>
 
 
       {/* ================= BUILD MODAL ================= */}
