@@ -38,6 +38,8 @@ export default function Build() {
     const [isPanning, setIsPanning] = useState(false);
     const [panStart, setPanStart] = useState(null);
 
+    const [loadingState, setLoadingState] = useState(0);
+
 
     function buildEmptyWorld(rows, cols) {
         return Array.from({ length: rows }, (_, r) => {
@@ -48,6 +50,27 @@ export default function Build() {
                     return getBlockValue("eraser");
             });
         })
+    }
+
+    async function runMaze() {
+        console.log("maze ran")
+        setLoadingState(1);
+        
+        console.log("loading set to true")
+        await sendMazeDetails();
+        
+        console.log("policy rcvd", policy);
+        policy
+            ? navigate('/run', {
+                state: {
+                    mazeDims: mazeDims,
+                    rewardMatrix: mazeGrid,
+                    policy: policy,
+                    startLoc: startLocation,
+                    goalLoc: goalLocation
+                }
+            })
+            : console.log("meh")
     }
 
     useEffect(() => {
@@ -68,6 +91,12 @@ export default function Build() {
 
     }, []);
 
+    useEffect(() => {
+        if (!policy) return;
+
+        runMaze();
+
+    }, [policy])
 
     function currentSelectedTool() {
         for (const tool of toolArray) {
@@ -173,20 +202,6 @@ export default function Build() {
 
 
     const navigate = useNavigate();
-
-    async function runMaze() {
-        policy
-            ? navigate('/run', {
-                state: {
-                    mazeDims: mazeDims,
-                    rewardMatrix: mazeGrid,
-                    policy: policy,
-                    startLoc: startLocation,
-                    goalLoc: goalLocation
-                }
-            })
-            : console.log("meh")
-    }
 
 
     /*
@@ -399,12 +414,8 @@ export default function Build() {
 
             <div className="build-actions">
 
-                <button onClick={sendMazeDetails}>
-                    SEND DETAILS
-                </button>
-
-                <button onClick={runMaze}>
-                    RUN
+                <button onClick={sendMazeDetails} disabled={loadingState}>
+                    {(loadingState == 0) ? "RUN" : "Generating Policy ..."}
                 </button>
 
             </div>

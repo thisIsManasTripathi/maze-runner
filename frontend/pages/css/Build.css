@@ -1,3 +1,7 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=VT323&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Pixelify+Sans:wght@400..700&family=VT323&display=swap');
+
+
 html,
 body,
 #root {
@@ -162,15 +166,15 @@ body,
 
 .build-actions button {
     padding: 12px 20px;
-
+    /* font-family: 'VT323', monospace; */
+    font-family: Pixelify Sans, monospace;
     background: #000;
     color: #fff;
 
     border: 3px solid #fff;
 
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: bold;
+    font-size: 16px;
+    font-weight: bolder;
 
     letter-spacing: 1px;
 
