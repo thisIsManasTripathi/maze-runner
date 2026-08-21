@@ -179,8 +179,25 @@ export default function Build() {
         })
     }
 
+    function validateMaze(){
+        let msg = [];
+        if (goalLocation === null) {
+            msg.push("Please select the goal location.");
+        }
+        if (startLocation === null) {
+            msg.push("Please select the start location.")
+        }
+        return {message: msg, isValid: msg.length===0};
+    }
 
     async function sendMazeDetails() {
+        const validRes = validateMaze();
+        if (validRes.isValid === false) {
+            for (const msg of validRes.message) {
+                console.log(msg)
+            }
+            return;
+        }
         const response = await fetch("http://localhost:8000/api/configs/", {
             method: "POST",
             headers: {
@@ -344,7 +361,7 @@ export default function Build() {
 
 
     const selectedTool = currentSelectedTool();
-
+    console.log(selectedTool);
 
     return (
         <div className="build-page">
@@ -399,7 +416,8 @@ export default function Build() {
                     >
                         {cursor.blocked
                             ? <FaBan />
-                            : selectedTool.icon
+                            : <img src={selectedTool.spriteSrc} width={24} height={24} />
+                            // : selectedTool.icon
                         }
                     </div>
                 )}

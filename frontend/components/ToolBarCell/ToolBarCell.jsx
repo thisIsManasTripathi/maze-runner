@@ -8,8 +8,7 @@ export default function ToolBarCell({ name, icon, value, active, onClick }) {
         goal: "../../assets/goal_tool.png",
         start: "../../assets/start_tool.png",
     }
-    // console.log(logo[name])
-    console.log(name)
+
     return (
         <div
             className={`toolbar-cell ${active ? "active" : ""}`}

@@ -7,24 +7,27 @@ export const tools = [
         name: "wall",
         icon: <GiBrickWall />,
         value: -10,
+        spriteSrc: "../../assets/wall.png"
     },
     {
         name: "eraser",
         icon: <FaEraser />,
         value: -0.1,
+        spriteSrc: "../../assets/hammer_tool.png"
 
     },
     {
         name: "start",
         icon: <GiMagicGate />,
         value: -0.1,
+        spriteSrc: "../../assets/start.png"
 
     },
     {
         name: "goal",
         icon: <GiGolfFlag />,
         value: 10,
-
+        spriteSrc: "../../assets/goal.png"
     },
 ];
 
