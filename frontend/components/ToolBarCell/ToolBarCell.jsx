@@ -3,8 +3,10 @@ import "./ToolBarCell.css";
 export default function ToolBarCell({ name, icon, value, active, onClick }) {
 
     const logo = { 
-        wall: "../../assets/wall_tool.png",
-        eraser: "../../assets/hammer_tool.png",
+        wall: "../../assets/wall_tool.png", //the tools images are basically larger size of the respective tiles
+        eraser: "../../assets/hammer_tool.png", 
+        goal: "../../assets/goal_tool.png",
+        start: "../../assets/start_tool.png",
     }
     // console.log(logo[name])
     console.log(name)
