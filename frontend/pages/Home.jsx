@@ -17,7 +17,7 @@ export default function Home() {
     console.log("Maze configs sent");
   };
 
-  console.log(mazeConfigs);
+  // console.log(mazeConfigs);
 
   return (
     <div className="home">

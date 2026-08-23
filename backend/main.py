@@ -21,13 +21,22 @@ class MazeConfig(BaseModel):
     mazeDimensions: dict
     mazeGrid: list
     goalLocation: list
+    modelConfigs: dict
 
-def solveMaze(mazeGridInput: list, goalLoc: tuple):
-    grid = GridWorld(gridInp=mazeGridInput, goalLoc=goalLoc)
+def solveMaze(mazeConfig: MazeConfig):
+
+    print(f"Model Configs : {mazeConfig.modelConfigs}") # type: ignore
+    grid = GridWorld(gridInp=mazeConfig.mazeGrid, goalLoc=tuple(mazeConfig.goalLocation))
     grid.setNonTerminalStates()
-    # agent = MCAgent(grid.nrows, grid.ncols)
-    agent = SARSAAgent(grid.nrows, grid.ncols)
-    trainer = Trainer(numEpisodes=1000, numRounds=1)
+
+    match mazeConfig.modelConfigs['model']: # type: ignore
+        case "SARSA":
+            agent = SARSAAgent(grid.nrows, grid.ncols)
+
+        case "MC":
+            agent = MCAgent(grid.nrows, grid.ncols)
+
+    trainer = Trainer(numEpisodes=mazeConfig.modelConfigs['numEpisodes'], numRounds=mazeConfig.modelConfigs['numRounds'], gamma=mazeConfig.modelConfigs['gamma'], epsilon=mazeConfig.modelConfigs['epsilon']) # type: ignore
     trainer.train(agent=agent, environment=grid)
     print(agent.getPolicy('simple'))
     print(f"{trainer.crashCount=}")
@@ -42,7 +51,7 @@ def solveMaze(mazeGridInput: list, goalLoc: tuple):
 def getConfig(mazeConfig: MazeConfig):
     # return ["Jai", "Hind"]
     print(mazeConfig.mazeGrid)
-    policy = solveMaze(mazeConfig.mazeGrid, tuple(mazeConfig.goalLocation)).tolist()
+    policy = solveMaze(mazeConfig).tolist()
     print(policy)
     return {"policy": policy}
 

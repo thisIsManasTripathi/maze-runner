@@ -46,7 +46,7 @@ export default function Build() {
 
     const [modelParams, setModelParams] = useState({
         numEpisodes: 1000,
-        numRounds: 100,
+        numRounds: 10,
         epsilon: 0.1,
         gamma: 0.9
     });
@@ -70,24 +70,15 @@ export default function Build() {
     }
 
     async function runMaze() {
-        console.log("maze ran")
-        setLoadingState(1);
-
-        console.log("loading set to true")
-        await sendMazeDetails();
-
-        console.log("policy rcvd", policy);
-        policy
-            ? navigate('/run', {
-                state: {
-                    mazeDims: mazeDims,
-                    rewardMatrix: mazeGrid,
-                    policy: policy,
-                    startLoc: startLocation,
-                    goalLoc: goalLocation
-                }
-            })
-            : console.log("meh")
+        navigate('/run', {
+            state: {
+                mazeDims: mazeDims,
+                rewardMatrix: mazeGrid,
+                policy: policy,
+                startLoc: startLocation,
+                goalLoc: goalLocation
+            }
+        })
     }
 
     useEffect(() => {
@@ -214,14 +205,15 @@ export default function Build() {
     }
 
     async function sendMazeDetails() {
+        setLoadingState(1);
         const validRes = validateMaze();
         if (validRes.isValid === false) {
             for (const msg of validRes.message) {
                 console.log(msg)
             }
+            setLoadingState(0);
             return;
         }
-
         const modelConfigs = {
             ...modelParams,
             model: selectedModel
@@ -399,8 +391,8 @@ export default function Build() {
     const selectedTool = currentSelectedTool();
     // console.log(selectedTool);
 
-    console.log("draft params : ",draftParamsRef.current)
-    console.log("model params : ",modelParams)
+    // console.log("draft params : ",draftParamsRef.current)
+    // console.log("model params : ",modelParams)
 
     return (
         <div className="build-page">
@@ -472,7 +464,7 @@ export default function Build() {
             <div className="build-actions">
 
                 <button onClick={sendMazeDetails} disabled={loadingState}>
-                    {(loadingState == 0) ? "RUN" : "Generating Policy ..."}
+                    {(loadingState == 0) ? "RUN." : "Generating Policy ..."}
                 </button>
 
             </div>
@@ -516,7 +508,7 @@ export default function Build() {
                             type="number"
                             min="1"
                             defaultValue={modelParams.numEpisodes}
-                            onChange={(e) => {draftParamsRef.current.numEpisodes = Number(e.target.value)}}
+                            onChange={(e) => { draftParamsRef.current.numEpisodes = Number(e.target.value) }}
                         />
                     </div>
 
@@ -531,7 +523,7 @@ export default function Build() {
                             type="number"
                             min="1"
                             defaultValue={modelParams.numRounds}
-                            onChange={(e) => {draftParamsRef.current.numRounds = Number(e.target.value)}}
+                            onChange={(e) => { draftParamsRef.current.numRounds = Number(e.target.value) }}
                         />
                     </div>
 
@@ -548,7 +540,7 @@ export default function Build() {
                             max="1"
                             step="0.01"
                             defaultValue={`${modelParams.epsilon}`}
-                            onChange={(e) => {draftParamsRef.current.epsilon = Number(e.target.value)}}
+                            onChange={(e) => { draftParamsRef.current.epsilon = Number(e.target.value) }}
                         />
                     </div>}
 
@@ -565,7 +557,7 @@ export default function Build() {
                             max="1"
                             step="0.01"
                             defaultValue={`${modelParams.gamma}`}
-                            onChange={(e) => {draftParamsRef.current.gamma = Number(e.target.value)}}
+                            onChange={(e) => { draftParamsRef.current.gamma = Number(e.target.value) }}
 
                         />
                     </div>
