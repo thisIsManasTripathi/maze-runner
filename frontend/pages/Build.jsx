@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { FaBan } from "react-icons/fa";
 
@@ -41,6 +41,23 @@ export default function Build() {
     const [loadingState, setLoadingState] = useState(0);
 
 
+    const [selectedModel, setSelectedModel] = useState("SARSA");
+    const [showParams, setShowParams] = useState(false);
+
+    const [modelParams, setModelParams] = useState({
+        numEpisodes: 1000,
+        numRounds: 100,
+        epsilon: 0.1,
+        gamma: 0.9
+    });
+
+    const draftParamsRef = useRef({
+        numEpisodes: 1000,
+        numRounds: 100,
+        epsilon: 0.1,
+        gamma: 0.9
+    });
+
     function buildEmptyWorld(rows, cols) {
         return Array.from({ length: rows }, (_, r) => {
             return Array.from({ length: cols }, (_, c) => {
@@ -55,10 +72,10 @@ export default function Build() {
     async function runMaze() {
         console.log("maze ran")
         setLoadingState(1);
-        
+
         console.log("loading set to true")
         await sendMazeDetails();
-        
+
         console.log("policy rcvd", policy);
         policy
             ? navigate('/run', {
@@ -108,7 +125,7 @@ export default function Build() {
 
     function fillCell(loc, value) {
         //If the curr cell ain't path AND curr tool ain't eraser (cause eraser can reset cell values) then invalid oprn
-        if ((mazeGrid[loc[0]][loc[1]] !== getBlockValue("eraser") || (startLocation[0] === loc[0] && startLocation[1] === loc[1]))  && currentSelectedTool().name !== "eraser") return;
+        if ((mazeGrid[loc[0]][loc[1]] !== getBlockValue("eraser") || (startLocation[0] === loc[0] && startLocation[1] === loc[1])) && currentSelectedTool().name !== "eraser") return;
 
 
         if (currentSelectedTool().name === "goal") {
@@ -179,15 +196,21 @@ export default function Build() {
         })
     }
 
-    function validateMaze(){
+    function validateMaze() {
         let msg = [];
         if (goalLocation === null) {
             msg.push("Please select the goal location.");
         }
         if (startLocation === null) {
-            msg.push("Please select the start location.")
+            msg.push("Please select the start location.");
         }
-        return {message: msg, isValid: msg.length===0};
+        if (modelParams.numEpisodes === 0) {
+            msg.push("Number of episodes can't be 0.");
+        }
+        if (modelParams.numRounds === 0) {
+            msg.push("Number of rounds can't be 0.");
+        }
+        return { message: msg, isValid: msg.length === 0 };
     }
 
     async function sendMazeDetails() {
@@ -198,6 +221,12 @@ export default function Build() {
             }
             return;
         }
+
+        const modelConfigs = {
+            ...modelParams,
+            model: selectedModel
+        }
+
         const response = await fetch("http://localhost:8000/api/configs/", {
             method: "POST",
             headers: {
@@ -206,6 +235,7 @@ export default function Build() {
             body: JSON.stringify({
                 mazeDimensions: mazeDims,
                 mazeGrid: mazeGrid,
+                modelConfigs: modelConfigs,
                 goalLocation: goalLocation
             })
         });
@@ -294,7 +324,7 @@ export default function Build() {
             x: e.clientX - rect.left,
             y: e.clientY - rect.top,
             visible: true,
-            blocked: (e.target.closest(".maze-wall") !== null )
+            blocked: (e.target.closest(".maze-wall") !== null)
                 || (currentSelectedTool().name !== "eraser" && e.target.closest(".path") === null)
             // blocked: (e.target.closest(".maze-wall") !== null
             //     || e.target.closest(".wall") !== null
@@ -352,6 +382,12 @@ export default function Build() {
         />
     );
 
+    function acceptParams() {
+        setModelParams(prevParams => {
+            return draftParamsRef.current;
+        })
+        setShowParams(false);
+    }
 
     if (mazeDims === null) {
         return (
@@ -361,7 +397,10 @@ export default function Build() {
 
 
     const selectedTool = currentSelectedTool();
-    console.log(selectedTool);
+    // console.log(selectedTool);
+
+    console.log("draft params : ",draftParamsRef.current)
+    console.log("model params : ",modelParams)
 
     return (
         <div className="build-page">
@@ -437,6 +476,124 @@ export default function Build() {
                 </button>
 
             </div>
+
+            <div className="model-controls">
+
+                <select
+                    value={selectedModel}
+                    onChange={(e) => setSelectedModel(e.target.value)}
+                >
+                    <option value="SARSA">SARSA</option>
+                    <option value="MC">MONTE CARLO</option>
+                </select>
+
+                <button onClick={() => setShowParams(true)}>
+                    PARAMETERS
+                </button>
+
+            </div>
+
+            {showParams && (
+
+                <div className="params-dialog">
+
+                    <button
+                        className="params-close"
+                        onClick={() => setShowParams(false)}
+                    >
+                        ×
+                    </button>
+
+                    <h2>TUNING</h2>
+
+                    <div className="param-field">
+                        <label htmlFor="numEpisodes">
+                            numEp:
+                        </label>
+
+                        <input
+                            id="numEpisodes"
+                            type="number"
+                            min="1"
+                            defaultValue={modelParams.numEpisodes}
+                            onChange={(e) => {draftParamsRef.current.numEpisodes = Number(e.target.value)}}
+                        />
+                    </div>
+
+
+                    <div className="param-field">
+                        <label htmlFor="numRounds">
+                            numRounds:
+                        </label>
+
+                        <input
+                            id="numRounds"
+                            type="number"
+                            min="1"
+                            defaultValue={modelParams.numRounds}
+                            onChange={(e) => {draftParamsRef.current.numRounds = Number(e.target.value)}}
+                        />
+                    </div>
+
+
+                    {selectedModel === "MC" && <div className="slider-field">
+                        <label htmlFor="epsilon">
+                            ɛ:
+                        </label>
+
+                        <input
+                            id="epsilon"
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.01"
+                            defaultValue={`${modelParams.epsilon}`}
+                            onChange={(e) => {draftParamsRef.current.epsilon = Number(e.target.value)}}
+                        />
+                    </div>}
+
+
+                    <div className="slider-field">
+                        <label htmlFor="gamma">
+                            γ:
+                        </label>
+
+                        <input
+                            id="gamma"
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.01"
+                            defaultValue={`${modelParams.gamma}`}
+                            onChange={(e) => {draftParamsRef.current.gamma = Number(e.target.value)}}
+
+                        />
+                    </div>
+
+
+                    <div className="params-actions">
+
+                        <button
+                            className="params-accept"
+                            onClick={acceptParams}
+                        >
+                            ✓
+                        </button>
+
+                        <button
+                            className="params-discard"
+                            onClick={() => {
+                                setShowParams(false);
+                            }}
+                        >
+                            ×
+                        </button>
+
+                    </div>
+
+                </div>
+
+            )}
 
         </div>
     );

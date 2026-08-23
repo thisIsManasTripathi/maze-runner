@@ -192,6 +192,331 @@ body,
 
 
 /* =========================
+   MODEL CONTROLS
+   ========================= */
+
+.model-controls {
+    position: fixed;
+
+    left: 28px;
+    bottom: 28px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    z-index: 50;
+}
+
+.model-controls select {
+    min-width: 180px;
+    height: 44px;
+
+    padding: 0 12px;
+
+    background: #000;
+    color: #fff;
+
+    border: 3px solid #fff;
+
+    font-family: "Pixelify Sans", monospace;
+    font-size: 15px;
+    font-weight: bold;
+
+    cursor: pointer;
+    outline: none;
+}
+
+.model-controls select:hover {
+    background: #fff;
+    color: #000;
+}
+
+.model-controls button {
+    height: 42px;
+
+    padding: 0 16px;
+
+    background: #000;
+    color: #fff;
+
+    border: 3px solid #fff;
+
+    font-family: "Pixelify Sans", monospace;
+    font-size: 14px;
+    font-weight: bold;
+
+    letter-spacing: 1px;
+
+    cursor: pointer;
+}
+
+.model-controls button:hover {
+    background: #fff;
+    color: #000;
+}
+
+.model-controls button:active {
+    transform: translate(2px, 2px);
+}
+
+
+/* =========================
+   PARAMETERS OVERLAY
+   ========================= */
+
+.params-overlay {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.72);
+
+    z-index: 100;
+}
+
+
+/* =========================
+   PARAMETERS DIALOG
+   ========================= */
+
+.params-dialog {
+    position: relative;
+
+    width: 420px;
+
+    padding: 32px 38px 26px;
+
+    background: #000;
+    color: #fff;
+
+    border: 3px solid #fff;
+
+    font-family: "Pixelify Sans", monospace;
+}
+
+.params-dialog h2 {
+    margin: 0 0 32px;
+
+    text-align: center;
+
+    font-family: "VT323", monospace;
+    font-size: 42px;
+    font-weight: normal;
+
+    letter-spacing: 3px;
+
+    text-decoration: underline;
+}
+
+
+/* =========================
+   CLOSE BUTTON
+   ========================= */
+
+.params-close {
+    position: absolute;
+
+    top: 8px;
+    right: 8px;
+
+    width: 28px;
+    height: 28px;
+
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #000;
+    color: #fff;
+
+    border: 2px solid #fff;
+
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.params-close:hover {
+    background: #fff;
+    color: #000;
+}
+
+
+/* =========================
+   NUMBER INPUTS
+   ========================= */
+
+.param-field {
+    display: flex;
+    align-items: center;
+
+    gap: 18px;
+
+    margin-bottom: 20px;
+}
+
+.param-field label {
+    min-width: 115px;
+
+    font-family: "VT323", monospace;
+    font-size: 26px;
+
+    letter-spacing: 1px;
+}
+
+.param-field input[type="number"] {
+    width: 90px;
+    height: 38px;
+
+    box-sizing: border-box;
+
+    padding: 4px 8px;
+
+    background: #000;
+    color: #fff;
+
+    border: 2px solid #fff;
+
+    font-family: "Pixelify Sans", monospace;
+    font-size: 16px;
+
+    outline: none;
+}
+
+.param-field input[type="number"]:focus {
+    box-shadow: 3px 3px 0 #fff;
+}
+
+
+/* =========================
+   SLIDERS
+   ========================= */
+
+.slider-field {
+    display: flex;
+    align-items: center;
+
+    gap: 18px;
+
+    margin: 22px 0;
+}
+
+.slider-field label {
+    width: 32px;
+
+    font-family: "VT323", monospace;
+    font-size: 30px;
+}
+
+.slider-field input[type="range"] {
+    flex: 1;
+
+    appearance: none;
+
+    height: 3px;
+
+    background: #fff;
+
+    outline: none;
+
+    cursor: pointer;
+}
+
+.slider-field input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+
+    width: 16px;
+    height: 16px;
+
+    background: #fff;
+
+    border: 2px solid #000;
+
+    cursor: pointer;
+}
+
+.slider-field input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+
+    background: #fff;
+
+    border: 2px solid #000;
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   ACCEPT / DISCARD
+   ========================= */
+
+.params-actions {
+    display: flex;
+    justify-content: center;
+
+    gap: 14px;
+
+    margin-top: 30px;
+}
+
+.params-actions button {
+    width: 58px;
+    height: 42px;
+
+    background: #000;
+    color: #fff;
+
+    border: 3px solid #fff;
+
+    font-family: Arial, sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.params-actions button:hover {
+    background: #fff;
+    color: #000;
+}
+
+.params-actions button:active {
+    transform: translate(2px, 2px);
+}
+
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 700px) {
+
+    .model-controls {
+        left: 16px;
+        bottom: 16px;
+    }
+
+    .model-controls select {
+        min-width: 150px;
+    }
+
+    .params-dialog {
+        width: calc(100% - 48px);
+        padding: 22px;
+    }
+}
+
+
+/* =========================
    MOBILE
    ========================= */
 
