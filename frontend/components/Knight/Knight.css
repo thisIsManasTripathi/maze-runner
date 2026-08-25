@@ -14,7 +14,7 @@
 
     user-select: none;
     pointer-events: none;
-    transition: transform 400ms ease;
+    transition: transform 400ms linear;
 }
 
 
@@ -42,6 +42,22 @@
     background-image: url('../../assets/idle.png');
     /* border: 3px solid #fff; */
 }
+.dead.down{
+    background-image: url('../../assets/dead-down.png');
+    /* border: 3px solid #fff; */
+}
+.dead.up{
+    background-image: url('../../assets/dead-up.png');
+    /* border: 3px solid #fff; */
+}
+.dead.right{
+    background-image: url('../../assets/dead-right.png');
+    /* border: 3px solid #fff; */
+}
+.dead.left{
+    background-image: url('../../assets/dead-left.png');
+    /* border: 3px solid #fff; */
+}
 
 .knight.running {
     background-position: 0 0;
@@ -64,14 +80,13 @@
 }
 
 .knight.dead {
-    background: #444;
-    color: #fff;
-}
+    background-position: 0 0;
+    background-color: transparent;
 
-.knight.victory {
-    background: green;
-    color: #000;
-    border: 3px solid #fff;
+    background-repeat: no-repeat;
+    background-size: 256px 32px;
+
+    animation: dead 1200ms steps(7) 1 forwards;  
 }
 
 @keyframes run {
@@ -92,6 +107,16 @@
     }
     to {
         background-position: -256px;
+        /* animation-timing-function: step(7); */
+    }
+}
+@keyframes dead {
+    from {
+        background-position: 0px;
+        /* animation-timing-function: step(7); */
+    }
+    to {
+        background-position: -224px;
         /* animation-timing-function: step(7); */
     }
 }

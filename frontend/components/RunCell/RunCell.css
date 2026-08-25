@@ -18,25 +18,30 @@
     opacity: 1;
 }
 
-.cell-reward {
-    color: #fff;
-    font-size: 10px;
-    line-height: 1;
+.run-cell.goal {
+    background-image: url('../../assets/goal.png');
+    outline:none;
+    border:none;
 }
 
+.run-cell.path {
+    background-image: url('../../assets/floor.png');
+    outline:none;
+    border:none;
+}
 .run-cell.wall {
-    /* background-image: url('../../'); */
-    background-color: #fff;
+    background-image: url('../../assets/wall.png');
+    outline:none;
+    border:none;
 }
 .run-cell.goal {
     /* background-color: #fff; */
-    border-color:aquamarine;
 }
 
 .cell-policy {
     position: absolute;
 
-    color: #fff;
+    /* color: #fff; */
     font-size: 14px;
     font-weight: bold;
 
