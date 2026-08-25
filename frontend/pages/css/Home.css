@@ -1,86 +1,997 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=VT323&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Pixelify+Sans:wght@400..700&family=VT323&display=swap');
 
-body {
-    background: #0f172a;
-    font-family: Arial, Helvetica, sans-serif;
-}
+/* =====================================================
+   HOME
+===================================================== */
 
 .home {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  min-height: 100vh;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background: #07080b;
+  color: #eeeeee;
+
+  font-family: "VT323", monospace;
 }
+
+
+/* subtle pixel scanlines */
+
+.home::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  z-index: 50;
+
+  background: repeating-linear-gradient(0deg,
+      rgba(255, 255, 255, 0.015) 0px,
+      rgba(255, 255, 255, 0.015) 1px,
+      transparent 1px,
+      transparent 4px);
+}
+
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+
+.home-navbar {
+  width: 100%;
+  height: 78px;
+
+  box-sizing: border-box;
+
+  padding: 0 4vw;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  position: relative;
+
+  z-index: 10;
+
+  border-bottom: 1px solid #181a1f;
+}
+
+
+/* logo */
+
+.home-logo {
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  font-family: "Press Start 2P", monospace;
+
+  font-size: 22px;
+
+  font-weight: 600;
+
+  letter-spacing: 1px;
+}
+
+.logo-knight {
+  font-size: 25px;
+
+  color: #d7d7d7;
+
+  animation: knightIdle 3s ease-in-out infinite;
+}
+
+
+/* right-side icons */
+
+.home-nav-icons {
+  display: flex;
+  align-items: center;
+
+  gap: 24px;
+}
+
+.home-nav-icons button {
+  border: none;
+
+  background: transparent;
+
+  color: #6d7076;
+
+  font-size: 23px;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.home-nav-icons button:hover {
+  color: #eeeeee;
+
+  transform: translateY(-2px);
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.hero {
+  min-height: calc(100vh - 78px);
+
+  box-sizing: border-box;
+
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 7vw;
+
+  isolation: isolate;
+}
+
+
+/* =====================================================
+   HERO CONTENT
+===================================================== */
+
+.hero-content {
+  width: 46%;
+
+  position: relative;
+
+  z-index: 5;
+
+  margin-top: -30px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+
+/* title */
+
+.hero-title {
+  margin: 0;
+
+  font-family: "Pixelify Sans", monospace;
+  /* font-family: "Press Start 2P", monospace; */
+
+  font-size: clamp(2rem, 4.5vw, 4.1rem);
+
+  line-height: 1.2;
+
+  letter-spacing: 0.5px;
+  word-spacing: 0.5px;
+
+  color: #eeeeee;
+
+  text-shadow:
+    3px 3px 0 #27292d;
+
+  font-weight: 700;
+
+  animation: titleAppear 0.8s ease-out both;
+}
+
+.hero-title span {
+  color: #5a5c61;
+
+  text-shadow:
+    3px 3px 0 #161719;
+}
+
+
+/* =====================================================
+   DIVIDER
+===================================================== */
+
+.hero-divider {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin: 22px 0;
+}
+
+.hero-divider span {
+  height: 2px;
+
+  flex: 1;
+
+  background: #6d7075;
+}
+
+.hero-divider b {
+  color: #707278;
+
+  font-size: 10px;
+}
+
+
+/* =====================================================
+   DESCRIPTION
+===================================================== */
+
+.hero-description {
+  margin: 0 0 28px;
+
+  color: #85878c;
+
+  font-size: 21px;
+
+  line-height: 1.15;
+
+  letter-spacing: 0.4px;
+
+  animation: fadeUp 0.8s 0.2s ease-out both;
+}
+
+
+/* =====================================================
+   BUILD BUTTON
+===================================================== */
+
+.build-button {
+  height: 53px;
+
+  min-width: 210px;
+  max-width: fit-content;
+
+  align-self: center;
+
+  padding: 0 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 13px;
+
+  border: none;
+
+  background: #eeeeee;
+
+  color: #08090b;
+
+  font-family: "VT323", monospace;
+
+  font-size: 22px;
+  font-weight: bolder;
+
+  cursor: pointer;
+
+  box-shadow: 5px 5px 0 #292b30;
+
+  clip-path: polygon(4px 0,
+      calc(100% - 4px) 0,
+      calc(100% - 4px) 3px,
+      100% 3px,
+      100% calc(100% - 3px),
+      calc(100% - 4px) calc(100% - 3px),
+      calc(100% - 4px) 100%,
+      4px 100%,
+      4px calc(100% - 3px),
+      0 calc(100% - 3px),
+      0 3px,
+      4px 3px);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.build-button:hover {
+  transform: translate(-2px, -2px);
+
+  box-shadow: 7px 7px 0 #3a3c41;
+}
+
+.build-button:active {
+  transform: translate(2px, 2px);
+
+  box-shadow: 2px 2px 0 #292b30;
+}
+
+
+/* =====================================================
+   HERO ART
+===================================================== */
+
+.hero-art {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 1;
+
+    pointer-events: none;
+
+    overflow: hidden;
+}
+
+.hero-art img {
+    width: 100%;
+    height: 100%;
+
+    /* margin-right: 50vw; */
+
+    display: block;
+
+    object-fit: cover;
+    /* object-position: center; */
+
+    --image-x: 200px;
+    transform: translateX(var(--image-x));
+
+    image-rendering: pixelated;
+
+    filter:
+        brightness(0.8)
+        contrast(1.08);
+
+    animation: artFloat 5s ease-in-out infinite;
+}
+.hero-art::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            to right,
+            #07080b 0%,
+            #07080b 15%,
+            rgba(7, 8, 11, 0.97) 25%,
+            rgba(7, 8, 11, 0.75) 35%,
+            rgba(7, 8, 11, 0.3) 48%,
+            transparent 65%
+        ),
+        linear-gradient(
+            to bottom,
+            #07080b 0%,
+            transparent 15%,
+            transparent 85%,
+            #07080b 100%
+        );
+}
+
+/* =====================================================
+   FLOATING PIXELS
+===================================================== */
+
+.pixel {
+  width: 4px;
+  height: 4px;
+
+  position: absolute;
+
+  background: #5c5f65;
+
+  z-index: 2;
+
+  animation: pixelBlink 3s ease-in-out infinite;
+}
+
+.pixel-one {
+  top: 17%;
+  left: 47%;
+}
+
+.pixel-two {
+  top: 29%;
+  right: 7%;
+
+  animation-delay: 1s;
+}
+
+.pixel-three {
+  bottom: 19%;
+  left: 70%;
+
+  animation-delay: 2s;
+}
+
+
+/* =====================================================
+   SCROLL INDICATOR
+===================================================== */
+
+.scroll-indicator {
+  position: absolute;
+
+  bottom: 18px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  color: #5d6065;
+
+  font-size: 14px;
+
+  letter-spacing: 1px;
+
+  z-index: 10;
+}
+
+.scroll-arrow {
+  margin-top: -5px;
+
+  font-size: 24px;
+
+  animation: scrollBounce 1.5s ease-in-out infinite;
+}
+
+
+/* =====================================================
+   MODAL OVERLAY
+===================================================== */
+
+.modal-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0, 0, 0, 0.78);
+
+  z-index: 100;
+
+  animation: overlayAppear 0.2s ease-out;
+}
+
+
+/* =====================================================
+   MAZE CARD
+===================================================== */
 
 .maze-card {
-    background: #1e293b;
-    padding: 2.5rem;
-    border-radius: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    min-width: 420px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+  width: min(430px, 88vw);
+
+  box-sizing: border-box;
+
+  padding: 30px;
+
+  position: relative;
+
+  background: #0b0c0f;
+
+  color: #eeeeee;
+
+  border: 1px solid #393b40;
+
+  box-shadow: 8px 8px 0 #030405;
+
+  animation: cardAppear 0.25s ease-out;
+
+  clip-path: polygon(7px 0,
+      calc(100% - 7px) 0,
+      calc(100% - 7px) 3px,
+      calc(100% - 3px) 3px,
+      calc(100% - 3px) 7px,
+      100% 7px,
+
+      100% calc(100% - 7px),
+      calc(100% - 3px) calc(100% - 7px),
+      calc(100% - 3px) calc(100% - 3px),
+      calc(100% - 7px) calc(100% - 3px),
+
+      7px calc(100% - 3px),
+      7px calc(100% - 7px),
+      3px calc(100% - 7px),
+      3px 100%,
+
+      0 100%,
+      0 7px,
+      3px 7px,
+      3px 3px,
+      7px 3px);
 }
 
-.maze-card h1 {
-    color: white;
-    text-align: center;
-    font-size: 2rem;
+
+/* =====================================================
+   CARD HEADER
+===================================================== */
+
+.maze-card-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
 }
+
+.maze-card-header h2 {
+  margin: 0;
+
+  font-family: "Press Start 2P", monospace;
+
+  font-size: 17px;
+
+  letter-spacing: 1px;
+}
+
+
+/* close */
+
+.close-button {
+  width: 32px;
+  height: 32px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #383a3f;
+
+  background: transparent;
+
+  color: #777a80;
+
+  font-family: "VT323", monospace;
+
+  font-size: 28px;
+
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.close-button:hover {
+  color: #eeeeee;
+
+  border-color: #777a80;
+
+  background: #181a1e;
+}
+
+
+/* =====================================================
+   CARD DIVIDER
+===================================================== */
+
+.card-divider {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin: 22px 0 25px;
+}
+
+.card-divider span {
+  flex: 1;
+
+  height: 1px;
+
+  background: #292b30;
+}
+
+.card-divider b {
+  color: #686b71;
+
+  font-size: 9px;
+}
+
+
+/* =====================================================
+   DIMENSIONS
+===================================================== */
+
+.dimension-title {
+  margin: 0 0 18px;
+
+  color: #777a80;
+
+  font-size: 18px;
+
+  letter-spacing: 1px;
+}
+
 
 .size-inputs {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1.25rem;
+  display: flex;
+
+  align-items: flex-end;
+  justify-content: center;
+
+  gap: 15px;
 }
 
-.size-inputs input {
-    width: 90px;
-    padding: 0.75rem;
-    font-size: 1.25rem;
-    text-align: center;
-    border: none;
-    border-radius: 10px;
-    outline: none;
-    background: #334155;
-    color: white;
+
+.dimension-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
 }
+
+.dimension-field label {
+  color: #85878c;
+
+  font-size: 17px;
+
+  letter-spacing: 1px;
+}
+
+
+/* inputs */
+
+.dimension-field input {
+  width: 120px;
+  height: 50px;
+
+  box-sizing: border-box;
+
+  padding: 0 10px;
+
+  border: 1px solid #3b3d42;
+
+  outline: none;
+
+  background: #050608;
+
+  color: #eeeeee;
+
+  font-family: "VT323", monospace;
+
+  font-size: 27px;
+
+  text-align: center;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.dimension-field input::placeholder {
+  color: #4e5055;
+}
+
+.dimension-field input:focus {
+  border-color: #aaaaaa;
+
+  box-shadow:
+    0 0 0 1px #aaaaaa;
+}
+
+
+/* Hide number arrows */
+
+.dimension-field input::-webkit-inner-spin-button,
+.dimension-field input::-webkit-outer-spin-button {
+  opacity: 0.5;
+}
+
+
+/* multiplication symbol */
 
 .cross {
-    color: white;
-    font-size: 2rem;
-    font-weight: bold;
+  padding-bottom: 7px;
+
+  color: #696c72;
+
+  font-size: 28px;
 }
 
-button {
-    padding: 0.9rem;
-    border: none;
-    border-radius: 10px;
-    background: #3b82f6;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: 0.2s;
+
+/* =====================================================
+   MODAL BUILD BUTTON
+===================================================== */
+
+.modal-build-button {
+  width: 100%;
+  height: 52px;
+
+  margin-top: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  border: none;
+
+  background: #eeeeee;
+
+  color: #08090b;
+
+  font-family: "VT323", monospace;
+
+  font-size: 22px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  box-shadow: 4px 4px 0 #303238;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-button:hover {
-    background: #2563eb;
-}
-/* Chrome, Safari, Edge, Opera */
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+.modal-build-button:hover {
+  transform: translate(-2px, -2px);
+
+  box-shadow: 6px 6px 0 #3b3d42;
 }
 
-/* Firefox */
-input[type="number"] {
-  -moz-appearance: textfield;
-  appearance: textfield;
+.modal-build-button:active {
+  transform: translate(2px, 2px);
+
+  box-shadow: 1px 1px 0 #303238;
+}
+
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+
+@keyframes titleAppear {
+  from {
+    opacity: 0;
+
+    transform: translateY(20px);
+
+    filter: blur(4px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform: translateY(0);
+
+    filter: blur(0);
+  }
+}
+
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform: translateY(0);
+  }
+}
+
+
+@keyframes artAppear {
+  from {
+    opacity: 0;
+
+    transform: translate(50px, -50%);
+  }
+
+  to {
+    opacity: 1;
+
+    transform: translate(0, -50%);
+  }
+}
+
+
+@keyframes artFloat {
+
+  0%,
+  100% {
+    /* transform: translateY(0); */
+    transform: translate(var(--image-x), 0);
+  }
+
+  50% {
+    /* transform: translateY(-7px); */
+    transform: translate(var(--image-x), -7px);
+  }
+}
+
+
+@keyframes knightIdle {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+
+@keyframes pixelBlink {
+
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+
+@keyframes scrollBounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: translateY(6px);
+
+    opacity: 1;
+  }
+}
+
+
+@keyframes overlayAppear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(15px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0) scale(1);
+  }
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 900px) {
+
+  .hero {
+    padding: 50px 7vw 100px;
+
+    align-items: flex-start;
+  }
+
+  .hero-content {
+    width: 100%;
+
+    margin-top: 45px;
+  }
+
+  .hero-art {
+    width: 90%;
+
+    right: -15%;
+    top: 58%;
+
+    opacity: 0.32;
+
+    z-index: 1;
+  }
+
+  .hero-title {
+    font-size: clamp(1.7rem, 7vw, 3rem);
+  }
+}
+
+
+@media (max-width: 600px) {
+
+  .home-navbar {
+    height: 65px;
+
+    padding: 0 20px;
+  }
+
+  .home-logo {
+    font-size: 10px;
+  }
+
+  .logo-knight {
+    font-size: 18px;
+  }
+
+  .home-nav-icons {
+    gap: 12px;
+  }
+
+  .home-nav-icons button {
+    font-size: 18px;
+  }
+
+  .hero {
+    min-height: calc(100vh - 65px);
+
+    padding: 35px 25px 90px;
+  }
+
+  .hero-description {
+    font-size: 18px;
+  }
+
+  .hero-art {
+    width: 120%;
+
+    right: -35%;
+    top: 58%;
+
+    opacity: 0.25;
+  }
+
+  .build-button {
+    min-width: 190px;
+  }
+
+  .maze-card {
+    padding: 23px;
+
+    width: 90vw;
+  }
+
+  .maze-card-header h2 {
+    font-size: 13px;
+  }
+
+  .dimension-field input {
+    width: 105px;
+  }
+
+  .scroll-indicator {
+    bottom: 10px;
+  }
 }

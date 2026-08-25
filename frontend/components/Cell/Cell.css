@@ -21,25 +21,23 @@
 }
 
 .wall {
-    background-image: url('../../assets/tile1.png');
-    /* background-color: #fff; */
+    background-image: url('../../assets/wall.png');
+    outline:none;
+    border:none;
 }
-.path {
-    /* background-image: url('../../assets/floor02.png'); */
-    background-color: #000;
+.path{
+    background-image: url('../../assets/floor.png');
+    outline:none;
+    border:none;
 }
+
 .start {
-    /* background-color: #fff; */
-    border-color:aquamarine;
+    background-image: url('../../assets/start.png');
+    outline:none;
+    border:none;
 }
 .goal {
-    /* background-color: #fff; */
-    border-color:red;
+    background-image: url('../../assets/goal.png');
+    outline:none;
+    border:none;
 }
-
-
-/* .cell:hover {
-    background-color: #334155;
-    border-color: #60a5fa;
-    transform: scale(1.05);
-} */
