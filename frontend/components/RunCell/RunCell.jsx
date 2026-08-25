@@ -12,15 +12,6 @@ export default function RunCell(props) {
 
     return (
         <div className={stateClass}>
-            {/* <span className="cell-reward">
-                {value}
-            </span> */}
-
-            {/* {policy && (
-                <span className="cell-policy">
-                    {policy}
-                </span>
-            )} */}
         </div>
     );
 }

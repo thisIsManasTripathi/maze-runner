@@ -1,4 +1,5 @@
 .knight {
+    image-rendering: pixelated;
     z-index: 10;
     width: 32px;
     height: 32px;
@@ -10,15 +11,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
-    background: #fff;
-    color: #000;
-
-    border: 2px solid #fff;
-
-    font-size: 10px;
-    font-family: "Courier New", monospace;
-    font-weight: bold;
 
     user-select: none;
     pointer-events: none;
@@ -32,14 +24,43 @@
    STATES
    ========================= */
 
-.knight.idle {
-    background: rgb(255, 191, 0);
-    color: #000;
+
+.left {
+    background-image: url('../../assets/walk-left.png');  
+}
+.right {
+    background-image: url('../../assets/walk-right.png');
+}
+.up {
+    background-image: url('../../assets/walk-up.png');
+}
+.down {
+    background-image: url('../../assets/walk-down.png');
+}
+
+.idle{
+    background-image: url('../../assets/idle.png');
+    /* border: 3px solid #fff; */
 }
 
 .knight.running {
-    background: greenyellow;
-    color: #000;
+    background-position: 0 0;
+    background-color: transparent;
+
+    background-repeat: no-repeat;
+    background-size: 256px 32px;
+
+    animation: run 1200ms steps(8) infinite;
+}
+
+.knight.idle {
+    background-position: 0 0;
+    background-color: transparent;
+
+    background-repeat: no-repeat;
+    background-size: 256px 32px;
+
+    animation: idle 1200ms steps(8) infinite;
 }
 
 .knight.dead {
@@ -50,6 +71,27 @@
 .knight.victory {
     background: green;
     color: #000;
-
     border: 3px solid #fff;
+}
+
+@keyframes run {
+    from {
+        background-position: 0px;
+        /* animation-timing-function: step(7); */
+    }
+    to {
+        background-position: -256px;
+        /* animation-timing-function: step(7); */
+
+    }
+}
+@keyframes idle {
+    from {
+        background-position: 0px;
+        /* animation-timing-function: step(7); */
+    }
+    to {
+        background-position: -256px;
+        /* animation-timing-function: step(7); */
+    }
 }

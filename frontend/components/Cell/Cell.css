@@ -22,7 +22,11 @@
 
 .wall {
     background-image: url('../../assets/tile1.png');
-    background-color: #fff;
+    /* background-color: #fff; */
+}
+.path {
+    /* background-image: url('../../assets/floor02.png'); */
+    background-color: #000;
 }
 .start {
     /* background-color: #fff; */

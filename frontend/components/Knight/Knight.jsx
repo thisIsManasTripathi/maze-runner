@@ -3,7 +3,7 @@ import clsx from 'clsx'
 
 export default function Knight({state, direction, position}) {
 
-    const stateClass = clsx('knight', state.toLowerCase(), direction);
+    const stateClass = clsx('knight', state.toLowerCase(), direction.toLowerCase());
     console.log(stateClass)
 
     return (
@@ -15,7 +15,7 @@ export default function Knight({state, direction, position}) {
             }}
             // onClick={()=>{props.handleClick(props.loc, props.value)}} 
         >
-            {direction}
+            {/* {direction} */}
         </div>
     );
 }
