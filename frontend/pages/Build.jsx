@@ -491,8 +491,8 @@ export default function Build() {
                     value={selectedModel}
                     onChange={(e) => setSelectedModel(e.target.value)}
                 >
-                    <option value="SARSA">SARSA</option>
-                    <option value="MC">MONTE CARLO</option>
+                    <option value="SARSA" title="heavy-duty model">SARSA</option>
+                    <option value="MC" title="tubelight model">MONTE CARLO</option>
                 </select>
 
                 <button onClick={() => setShowParams(true)}>
@@ -516,7 +516,7 @@ export default function Build() {
 
                     <div className="param-field">
                         <label htmlFor="numEpisodes">
-                            numEp:
+                            numEpisodes:
                         </label>
 
                         <input
@@ -545,7 +545,7 @@ export default function Build() {
 
 
                     {selectedModel === "MC" && <div className="slider-field">
-                        <label htmlFor="epsilon">
+                        <label htmlFor="epsilon" title="higher the epsilon value, more often the agent explores.">
                             ɛ:
                         </label>
 
@@ -562,7 +562,7 @@ export default function Build() {
 
 
                     <div className="slider-field">
-                        <label htmlFor="gamma">
+                        <label htmlFor="gamma" title="discounting factor: decides how diminished the reward should the agent receive as number of step required to achieve it increases.">
                             γ:
                         </label>
 

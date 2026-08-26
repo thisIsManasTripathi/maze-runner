@@ -59,14 +59,6 @@ export default function Home() {
             <span></span>
           </div>
 
-          <p className="hero-description">
-            Enter the maze, outsmart the twists,
-            <br />
-            and reach the goal. Every move
-            <br />
-            tests your mind.
-          </p>
-
           <button
             className="build-button"
             onClick={() => setShowModal(true)}
