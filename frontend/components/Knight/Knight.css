@@ -103,20 +103,16 @@
 @keyframes idle {
     from {
         background-position: 0px;
-        /* animation-timing-function: step(7); */
     }
     to {
         background-position: -256px;
-        /* animation-timing-function: step(7); */
     }
 }
 @keyframes dead {
     from {
         background-position: 0px;
-        /* animation-timing-function: step(7); */
     }
     to {
         background-position: -224px;
-        /* animation-timing-function: step(7); */
     }
 }

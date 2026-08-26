@@ -94,11 +94,11 @@ export default function Run() {
             <div className="run-controls">
                 <button
                     onClick={() => setGameState("RUNNING")}
-                    disabled={gameState === "DEAD" || gameState === "VICTORY"}
+                    disabled={gameState === "DEAD" || gameState === "VICTORY" || gameState == "RUNNING"}
                 >
                     {gameState === "VICTORY" ? "GOAL REACHED!" :
-                        gameState === "DEAD" ? "WASTED" :
-                            gameState == "RUNNING" ? "RUNNING..." : "START"}
+                        gameState === "DEAD" ? <img src="../../assets/dead.png" width={32} height={32}/> :
+                            gameState == "RUNNING" ? <img src="../../assets/resume.png" width={32} height={32}/> : <img src="../../assets/play.png" width={32} height={32}/>}
                 </button>
 
                 <button
@@ -108,7 +108,7 @@ export default function Run() {
                         setGameState("IDLE");
                     }}
                 >
-                    RESET
+                    <img src="../../assets/restart.png" width={32} height={32}/>
                 </button>
             </div>
         </div>

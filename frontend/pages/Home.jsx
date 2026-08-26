@@ -158,6 +158,7 @@ export default function Home() {
                   value={mazeConfigs.rows ? mazeConfigs.rows : ""}
                   type="number"
                   min="2"
+                  max="20"
                   placeholder="Rows"
                   onChange={(currVal) => {
                     setMazeConfigs(prevConfig => {
@@ -188,6 +189,7 @@ export default function Home() {
                   value={mazeConfigs.cols ? mazeConfigs.cols : ""}
                   type="number"
                   min="2"
+                  max="30"
                   placeholder="Cols"
                   onChange={(currVal) => {
                     setMazeConfigs(prevConfig => {
