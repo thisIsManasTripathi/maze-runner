@@ -4,7 +4,7 @@ import clsx from 'clsx'
 export default function Knight({state, direction, position}) {
 
     const stateClass = clsx('knight', state.toLowerCase(), direction.toLowerCase());
-    console.log(stateClass)
+    // console.log(stateClass)
 
     return (
         <div

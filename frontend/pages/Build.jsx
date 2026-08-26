@@ -69,6 +69,14 @@ export default function Build() {
         })
     }
 
+    function buildExistingWorld(gridInput){
+        setMazeGrid(()=>{
+            let newMazeGrid = gridInput.map(row => row.slice()); //takes each row at once and copies it into the newMazeGrid
+            // console.log(newMazeGrid);
+            return newMazeGrid;
+        })
+    }
+
     async function runMaze() {
         navigate('/run', {
             state: {
@@ -85,8 +93,16 @@ export default function Build() {
 
         if (!(location?.state ?? null)) return;
 
-        const { rows, cols } = location.state ?? {};
+        if (location?.state?.rewardMatrix ) {
+            console.log(location.state)
+            setMazeDims(location.state.mazeDims);
+            buildExistingWorld(location.state.rewardMatrix);
+            setGoalLocation(location.state.goalLoc);
+            // setModelParams();
+            return;
+        }
 
+        const { rows, cols } = location.state ?? {};
         setMazeGrid((prev) => {
             const grid = buildEmptyWorld(rows + 2, cols + 2);
             return grid;
