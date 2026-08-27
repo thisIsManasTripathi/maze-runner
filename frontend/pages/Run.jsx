@@ -24,7 +24,11 @@ export default function Run() {
         startLoc
     } = location.state ?? {};
 
-    const [currentLoc, setCurrentLoc] = useState(startLoc);
+    // console.log(location.state)
+
+    if (!location.state) return ( <Fallback />)
+
+    const [currentLoc, setCurrentLoc] = useState(startLoc??null);
 
     const [directionState, setDirectionState] = useState(
         () => getDirectionFromOffset(currentLoc)
@@ -103,30 +107,22 @@ export default function Run() {
     }, [gameState, currentLoc]);
 
 
-    if (!rewardMatrix || !policy) {
-        return <Fallback />;
-    }
+    // if (!rewardMatrix || !policy) {
+    //     return <Fallback />;
+    // }
 
 
     return (
         <div className="run-page">
 
-            {/* =========================
-                TITLE
-            ========================= */}
 
             <h1 className="run-title">
                 MAZE RUNNER
             </h1>
 
 
-            {/* =========================
-                MAIN GAME AREA
-            ========================= */}
-
             <div className="run-game-area">
 
-                {/* MAZE */}
 
                 <div className="run-maze-container">
 
@@ -141,10 +137,6 @@ export default function Run() {
 
                         {rewardMatrix.map((row, r) =>
                             row.map((cellValue, c) => {
-
-                                const isActive =
-                                    currentLoc[0] === r &&
-                                    currentLoc[1] === c;
 
                                 return (
                                     <RunCell
@@ -166,10 +158,6 @@ export default function Run() {
                 </div>
 
 
-                {/* =========================
-                    CONTROLS
-                ========================= */}
-
                 <div className="run-controls">
 
                     <button
@@ -185,9 +173,10 @@ export default function Run() {
                     >
 
                         {gameState === "VICTORY" ? (
-                            <span className="control-text">
-                                :D
-                            </span>
+                            <img
+                                src="../../assets/victory.png"
+                                alt=""
+                            />
                         ) : gameState === "DEAD" ? (
                             <img
                                 src="../../assets/dead.png"

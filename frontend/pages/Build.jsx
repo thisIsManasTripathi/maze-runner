@@ -286,12 +286,7 @@ export default function Build() {
 
     const navigate = useNavigate();
 
-
-    /*
-     * -------------------------
-     * UI: ZOOM
-     * -------------------------
-     */
+    //zoom handling
 
     function handleWheel(e) {
         // e.preventDefault();
@@ -304,12 +299,7 @@ export default function Build() {
         });
     }
 
-
-    /*
-     * -------------------------
-     * UI: PAN
-     * -------------------------
-     */
+    //pan handling
 
     function handlePanStart(e) {
 
@@ -345,12 +335,7 @@ export default function Build() {
         setPanStart(null);
     }
 
-
-    /*
-     * -------------------------
-     * UI: CUSTOM CURSOR
-     * -------------------------
-     */
+    //custom cursor handling
 
     function handleMazeMouseMove(e) {
 

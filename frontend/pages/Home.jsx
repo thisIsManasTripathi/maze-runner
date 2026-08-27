@@ -22,12 +22,10 @@ export default function Home() {
   return (
     <div className="home">
 
-      {/* ================= NAVBAR ================= */}
 
       <nav className="home-navbar">
 
         <div className="home-logo">
-          {/* <span className="logo-knight">♞</span> */}
           <img src="../assets/knight-helm-logo.png" width={50} height={37} className="logo-knight"/>
           <span>MAZE RUNNER</span>
         </div>
@@ -39,15 +37,12 @@ export default function Home() {
       </nav>
 
 
-      {/* ================= HERO ================= */}
-
       <section className="hero">
 
         <div className="hero-content">
 
           <h1 className="hero-title">
-            {/* SOLVE.
-            <br /> */}
+
             You Build.
             <br />
             <span>I solve.</span>
@@ -70,8 +65,6 @@ export default function Home() {
         </div>
 
 
-        {/* ================= HERO ART ================= */}
-
         <div className="hero-art">
 
           <img
@@ -84,14 +77,12 @@ export default function Home() {
       </section>
 
 
-      {/* ================= DECORATION ================= */}
 
       <div className="pixel pixel-one"></div>
       <div className="pixel pixel-two"></div>
       <div className="pixel pixel-three"></div>
 
 
-      {/* ================= BUILD MODAL ================= */}
 
       {showModal && (
 
@@ -106,7 +97,6 @@ export default function Home() {
             onMouseDown={(e) => e.stopPropagation()}
           >
 
-            {/* Modal header */}
 
             <div className="maze-card-header">
 
@@ -131,10 +121,9 @@ export default function Home() {
             </div>
 
 
-            {/* Dimensions */}
 
             <p className="dimension-title">
-              CHOOSE DIMENSIONS
+              CHOOSE MAZE DIMENSIONS
             </p>
 
             <div className="size-inputs">
@@ -197,8 +186,6 @@ export default function Home() {
 
             </div>
 
-
-            {/* Build */}
 
             <button
               className="modal-build-button"
