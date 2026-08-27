@@ -14,7 +14,7 @@ export default function Home() {
     e.preventDefault();
     navigate("/build", { state: mazeConfigs });
 
-    console.log("Maze configs sent");
+    // console.log("Maze configs sent");
   };
 
   // console.log(mazeConfigs);

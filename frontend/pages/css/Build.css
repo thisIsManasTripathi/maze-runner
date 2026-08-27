@@ -1,4 +1,4 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=VT323&display=swap'); */
+/* @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=VT323&display=sxp'); */
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Pixelify+Sans:wght@400..700&family=VT323&display=swap');
 
 
@@ -489,7 +489,122 @@ body,
 
 .params-actions button:active {
     transform: translate(2px, 2px);
+}/* ========================================
+   CUSTOM TOAST
+   ======================================== */
+
+.build-toast {
+    position: fixed;
+
+    top: 30px;
+    right: 30px;
+
+    min-width: 260px;
+    max-width: 380px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 14px 18px;
+
+    box-sizing: border-box;
+
+    background: #090909;
+
+    color: #fff;
+
+    border: 2px solid #fff;
+
+    /*
+       Pixel-art style hard shadow
+    */
+    box-shadow: 5px 5px 0 #566575;
+
+    z-index: 9999;
+
+    font-family: "Pixelify Sans", monospace;
+
+    animation: build-toast-in 160ms steps(3, end);
 }
+
+
+/* ========================================
+   WARNING MARKER
+   ======================================== */
+
+.build-toast-marker {
+    width: 25px;
+    height: 25px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #71879b;
+
+    color: #000;
+
+    font-family: "VT323", monospace;
+
+    font-size: 21px;
+    font-weight: bold;
+
+    line-height: 1;
+}
+
+
+/* ========================================
+   MESSAGE
+   ======================================== */
+
+.build-toast-message {
+    font-size: 13px;
+
+    line-height: 1.35;
+
+    letter-spacing: 0.5px;
+}
+
+
+/* ========================================
+   ENTRY ANIMATION
+   ======================================== */
+
+@keyframes build-toast-in {
+
+    from {
+        transform: translateX(30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+
+/* ========================================
+   MOBILE
+   ======================================== */
+
+@media (max-width: 600px) {
+
+    .build-toast {
+        top: 20px;
+        right: 20px;
+        left: 20px;
+
+        min-width: 0;
+        max-width: none;
+    }
+}
+
+
 
 
 /* =========================

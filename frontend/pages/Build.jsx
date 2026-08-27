@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { FaBan } from "react-icons/fa";
-
 import Cell from "../components/Cell/Cell";
 import ToolBarCell from "../components/ToolBarCell/ToolBarCell";
 import { tools, getBlockValue } from "../tools";
@@ -51,12 +50,16 @@ export default function Build() {
         gamma: 0.9
     });
 
+    const [toastMessage, setToastMessage] = useState(null);
+
     const draftParamsRef = useRef({
         numEpisodes: 1000,
         numRounds: 100,
         epsilon: 0.1,
         gamma: 0.9
     });
+
+    // console.log("goal : ", goalLocation);
 
     function buildEmptyWorld(rows, cols) {
         return Array.from({ length: rows }, (_, r) => {
@@ -69,8 +72,8 @@ export default function Build() {
         })
     }
 
-    function buildExistingWorld(gridInput){
-        setMazeGrid(()=>{
+    function buildExistingWorld(gridInput) {
+        setMazeGrid(() => {
             let newMazeGrid = gridInput.map(row => row.slice()); //takes each row at once and copies it into the newMazeGrid
             // console.log(newMazeGrid);
             return newMazeGrid;
@@ -93,8 +96,8 @@ export default function Build() {
 
         if (!(location?.state ?? null)) return;
 
-        if (location?.state?.rewardMatrix ) {
-            console.log(location.state)
+        if (location?.state?.rewardMatrix) {
+            // console.log(location.state)
             setMazeDims(location.state.mazeDims);
             buildExistingWorld(location.state.rewardMatrix);
             setGoalLocation(location.state.goalLoc);
@@ -131,8 +134,17 @@ export default function Build() {
 
 
     function fillCell(loc, value) {
-        //If the curr cell ain't path AND curr tool ain't eraser (cause eraser can reset cell values) then invalid oprn
-        if ((mazeGrid[loc[0]][loc[1]] !== getBlockValue("eraser") || (startLocation[0] === loc[0] && startLocation[1] === loc[1])) && currentSelectedTool().name !== "eraser") return;
+        //no operations allowed on start cell (can only be placed else where)
+        if (startLocation[0] === loc[0] && startLocation[1] === loc[1]) return;
+
+        //no operations allowed on outer walls
+        if (
+            (loc[0] === 0 || loc[0] === mazeDims.rows - 1) ||
+            (loc[1] === 0 || loc[1] === mazeDims.cols - 1)
+        ) return;
+
+            //If the curr cell ain't path AND curr tool ain't eraser (cause eraser can reset cell values) then invalid oprn
+        if (mazeGrid[loc[0]][loc[1]] !== getBlockValue("eraser") && currentSelectedTool().name !== "eraser") return;
 
 
         if (currentSelectedTool().name === "goal") {
@@ -178,15 +190,18 @@ export default function Build() {
 
                 let newMazeGrid = [...prevMazeGrid];
 
-                //prevents erasing the outer wall boundary
-                if (
-                    (loc[0] === 0 || loc[0] === mazeDims.rows - 1) ||
-                    (loc[1] === 0 || loc[1] === mazeDims.cols - 1)
-                )
-                    return prevMazeGrid;
+                // //prevents erasing the outer wall boundary
+                // if (
+                //     (loc[0] === 0 || loc[0] === mazeDims.rows - 1) ||
+                //     (loc[1] === 0 || loc[1] === mazeDims.cols - 1)
+                // )
+                //     return prevMazeGrid;
 
                 newMazeGrid[loc[0]][loc[1]] =
                     currentSelectedTool().value;
+
+                //if the erased cell is goal then reset goalLocation
+                if (value === getBlockValue("goal")) setGoalLocation(null);
 
                 return newMazeGrid;
             })
@@ -211,21 +226,34 @@ export default function Build() {
         if (startLocation === null) {
             msg.push("Please select the start location.");
         }
-        if (modelParams.numEpisodes === 0) {
-            msg.push("Number of episodes can't be 0.");
+        if (modelParams.numRounds === 0 || modelParams.numEpisodes === 0) {
+            msg.push("Number of rounds/episodes can't be 0.");
         }
-        if (modelParams.numRounds === 0) {
-            msg.push("Number of rounds can't be 0.");
-        }
+
         return { message: msg, isValid: msg.length === 0 };
+    }
+
+    function raiseToast(msg) {
+
+        setToastMessage(msg)
+
+        setTimeout(() => {
+            setToastMessage(null);
+        }, 3000);
+
+        // console.log("toast fired")
     }
 
     async function sendMazeDetails() {
         setLoadingState(1);
+
         const validRes = validateMaze();
+
         if (validRes.isValid === false) {
             for (const msg of validRes.message) {
-                console.log(msg)
+                // console.log(msg)
+                raiseToast(msg);
+                break;
             }
             setLoadingState(0);
             return;
@@ -252,7 +280,7 @@ export default function Build() {
 
         setPolicy(policyRcvd.policy);
 
-        console.log("bhej diya");
+        // console.log("bhej diya");
     }
 
 
@@ -333,7 +361,8 @@ export default function Build() {
             y: e.clientY - rect.top,
             visible: true,
             blocked: (e.target.closest(".maze-wall") !== null)
-                || (currentSelectedTool().name !== "eraser" && e.target.closest(".path") === null)
+                || (currentSelectedTool().name !== "eraser" && e.target.closest(".path") === null) 
+                || (e.target.closest('.start') !== null)
             // blocked: (e.target.closest(".maze-wall") !== null
             //     || e.target.closest(".wall") !== null
             //     || ((currentSelectedTool().name === "wall") // if the tool is wall and cell is the goal state
@@ -412,7 +441,6 @@ export default function Build() {
 
     return (
         <div className="build-page">
-
             <div
                 className={`maze-viewport ${isPanning ? "panning" : ""
                     } ${selectedTool ? "tool-selected" : ""}`}
@@ -598,11 +626,19 @@ export default function Build() {
                         </button>
 
                     </div>
-
                 </div>
 
             )}
 
+            {toastMessage && (
+                <div className="build-toast">
+                    <span className="build-toast-marker">!</span>
+
+                    <span className="build-toast-message">
+                        {toastMessage}
+                    </span>
+                </div>
+            )}
         </div>
     );
 }

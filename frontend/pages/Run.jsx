@@ -53,7 +53,7 @@ export default function Run() {
         // collision-detection
         if (
             rewardMatrix[currentLoc[0]][currentLoc[1]] ===
-                getBlockValue("wall") ||
+            getBlockValue("wall") ||
             steps > maxStepsAllowed
         ) {
             setGameState("DEAD");
@@ -186,7 +186,7 @@ export default function Run() {
 
                         {gameState === "VICTORY" ? (
                             <span className="control-text">
-                                GOAL
+                                :D
                             </span>
                         ) : gameState === "DEAD" ? (
                             <img
@@ -225,7 +225,7 @@ export default function Run() {
                     </button>
                     <button
                         className="run-control-button"
-                        onClick={()=>{navigate("/")}}
+                        onClick={() => { navigate("/") }}
                     >
 
                         <img
@@ -236,7 +236,7 @@ export default function Run() {
                     </button>
                     <button
                         className="run-control-button"
-                        onClick={()=>{navigate("/build", {state: {...location.state}})}}
+                        onClick={() => { navigate("/build", { state: { ...location.state } }) }}
                     >
 
                         <img

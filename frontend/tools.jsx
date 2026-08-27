@@ -45,7 +45,7 @@ export const gameStates = ["IDLE", "RUNNING", "DEAD", "VICTORY"];
 export const moveStepDuration = 400;
 
 export function getDirectionFromOffset([roff, coff]){
-    console.log(roff, coff);
+    // console.log(roff, coff);
     if (roff !== 0) {
         if (roff === 1) return directions[1];
         else return directions[0];

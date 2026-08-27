@@ -13,6 +13,7 @@ export default function Cell(props) {
     })
 
     // if (props.isStart) console.log(props.loc)
+    // if (props.value === getBlockValue("goal")) console.log("goal loc at ",props.loc)
 
     const rotations = [0, 90, 180, 270];
 
