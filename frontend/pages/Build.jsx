@@ -263,7 +263,7 @@ export default function Build() {
             model: selectedModel
         }
 
-        const response = await fetch("http://localhost:8000/api/configs/", {
+        const response = await fetch("https://maze-runner-backend-84dt.onrender.com/api/configs/", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
