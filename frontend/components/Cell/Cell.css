@@ -21,23 +21,23 @@
 }
 
 .wall {
-    background-image: url('../../assets/wall.png');
+    background-image: url('/assets/wall.png');
     outline:none;
     border:none;
 }
 .path{
-    background-image: url('../../assets/floor.png');
+    background-image: url('/assets/floor.png');
     outline:none;
     border:none;
 }
 
 .start {
-    background-image: url('../../assets/start.png');
+    background-image: url('/assets/start.png');
     outline:none;
     border:none;
 }
 .goal {
-    background-image: url('../../assets/goal.png');
+    background-image: url('/assets/goal.png');
     outline:none;
     border:none;
 }

@@ -2,24 +2,24 @@ export const tools = [
     {
         name: "wall",
         value: -10,
-        spriteSrc: "../../assets/wall.png"
+        spriteSrc: "/assets/wall.png"
     },
     {
         name: "eraser",
         value: -0.1,
-        spriteSrc: "../../assets/hammer_tool.png"
+        spriteSrc: "/assets/hammer_tool.png"
 
     },
     {
         name: "start",
         value: -0.1,
-        spriteSrc: "../../assets/start.png"
+        spriteSrc: "/assets/start.png"
 
     },
     {
         name: "goal",
         value: 10,
-        spriteSrc: "../../assets/goal.png"
+        spriteSrc: "/assets/goal.png"
     },
 ];
 

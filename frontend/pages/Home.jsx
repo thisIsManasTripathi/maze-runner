@@ -26,7 +26,7 @@ export default function Home() {
       <nav className="home-navbar">
 
         <div className="home-logo">
-          <img src="../assets/knight-helm-logo.png" width={50} height={37} className="logo-knight"/>
+          <img src="/assets/knight-helm-logo.png" width={50} height={37} className="logo-knight"/>
           <span>MAZE RUNNER</span>
         </div>
 
@@ -68,7 +68,7 @@ export default function Home() {
         <div className="hero-art">
 
           <img
-            src="../assets/hero-bg.png"
+            src="/assets/hero-bg.png"
             alt="Pixel art maze"
           />
 

@@ -174,22 +174,22 @@ export default function Run() {
 
                         {gameState === "VICTORY" ? (
                             <img
-                                src="../../assets/victory.png"
+                                src="/assets/victory.png"
                                 alt=""
                             />
                         ) : gameState === "DEAD" ? (
                             <img
-                                src="../../assets/dead.png"
+                                src="/assets/dead.png"
                                 alt="Dead"
                             />
                         ) : gameState === "RUNNING" ? (
                             <img
-                                src="../../assets/resume.png"
+                                src="/assets/resume.png"
                                 alt="Running"
                             />
                         ) : (
                             <img
-                                src="../../assets/play.png"
+                                src="/assets/play.png"
                                 alt="Start"
                             />
                         )}
@@ -229,7 +229,7 @@ export default function Run() {
                     >
 
                         <img
-                            src="../../assets/edit-maze.png"
+                            src="/assets/edit-maze.png"
                             alt="Edit maze"
                         />
 
