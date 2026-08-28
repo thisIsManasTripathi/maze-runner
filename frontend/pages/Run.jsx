@@ -207,7 +207,7 @@ export default function Run() {
                     >
 
                         <img
-                            src="../../assets/restart.png"
+                            src="/assets/restart.png"
                             alt="Restart"
                         />
 
@@ -218,7 +218,7 @@ export default function Run() {
                     >
 
                         <img
-                            src="../../assets/home.png"
+                            src="/assets/home.png"
                             alt="Home"
                         />
 

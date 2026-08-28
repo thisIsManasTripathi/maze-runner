@@ -26,36 +26,36 @@
 
 
 .left {
-    background-image: url('../../assets/walk-left.png');  
+    background-image: url('/assets/walk-left.png');  
 }
 .right {
-    background-image: url('../../assets/walk-right.png');
+    background-image: url('/assets/walk-right.png');
 }
 .up {
-    background-image: url('../../assets/walk-up.png');
+    background-image: url('/assets/walk-up.png');
 }
 .down {
-    background-image: url('../../assets/walk-down.png');
+    background-image: url('/assets/walk-down.png');
 }
 
 .idle{
-    background-image: url('../../assets/idle.png');
+    background-image: url('/assets/idle.png');
     /* border: 3px solid #fff; */
 }
 .dead.down{
-    background-image: url('../../assets/dead-down.png');
+    background-image: url('/assets/dead-down.png');
     /* border: 3px solid #fff; */
 }
 .dead.up{
-    background-image: url('../../assets/dead-up.png');
+    background-image: url('/assets/dead-up.png');
     /* border: 3px solid #fff; */
 }
 .dead.right{
-    background-image: url('../../assets/dead-right.png');
+    background-image: url('/assets/dead-right.png');
     /* border: 3px solid #fff; */
 }
 .dead.left{
-    background-image: url('../../assets/dead-left.png');
+    background-image: url('/assets/dead-left.png');
     /* border: 3px solid #fff; */
 }
 

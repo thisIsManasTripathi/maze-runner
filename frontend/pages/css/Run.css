@@ -16,7 +16,7 @@
     overflow: hidden;
 
     font-family: "Pixelify Sans", monospace;
-    background-image: url('../../assets/run-bg.png');
+    background-image: url('/assets/run-bg.png');
     background-size: cover;
 }
 

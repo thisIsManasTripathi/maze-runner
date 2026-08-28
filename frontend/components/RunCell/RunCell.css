@@ -19,18 +19,18 @@
 }
 
 .run-cell.goal {
-    background-image: url('../../assets/goal.png');
+    background-image: url('/assets/goal.png');
     outline:none;
     border:none;
 }
 
 .run-cell.path {
-    background-image: url('../../assets/floor.png');
+    background-image: url('/assets/floor.png');
     outline:none;
     border:none;
 }
 .run-cell.wall {
-    background-image: url('../../assets/wall.png');
+    background-image: url('/assets/wall.png');
     outline:none;
     border:none;
 }
