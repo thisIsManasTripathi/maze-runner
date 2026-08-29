@@ -149,7 +149,7 @@ export default function Home() {
                       };
                     });
                   }}
-                />
+                required/>
 
               </div>
 
@@ -180,7 +180,7 @@ export default function Home() {
                       };
                     });
                   }}
-                />
+                required/>
 
               </div>
 
