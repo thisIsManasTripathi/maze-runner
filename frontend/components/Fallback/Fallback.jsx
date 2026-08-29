@@ -10,7 +10,11 @@ export default function Fallback() {
 
     return (
         <div className="no-maze-page">
-            <h1>NO MAZE TO RUN</h1>
+            <div>
+
+            </div>
+            <h1>NO MAZES TO RUN :/</h1>
+            <div id="dead-knight"></div>
 
             <p>Build a maze before starting a simulation.</p>
 
